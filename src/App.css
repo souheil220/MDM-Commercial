@@ -1,6 +1,13 @@
 .App {
   text-align: center;
 }
+.ouvrant-cadre {
+  display: flex;
+  align-items: center;
+}
+.form-select{
+  width: auto 
+}
 
 .App-logo {
   height: 40vmin;
