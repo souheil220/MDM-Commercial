@@ -22,7 +22,7 @@
 //Matière De Finition
 
 {
-    if (D3 == "" || D4 == "" || ET(D5 == "" && B5 != 1)) {
+    if (D3 == "" || D4 == "" || (D5 == "" && B5 != 1)) {
         return ""
     } else {
         return "Matière De Finition"
@@ -48,38 +48,35 @@
 }
 
 // Nombre de Ventaux
+
 {
-    if (
-        (D7 == "" && D3 == "Cadre Seul" && D6 == "MDF Brute") ||
-        (D7 != "")
-    ) {
+   
+    if(((B5===1&& D7===""&& D3==="Cadre Seul"&& D6==="MDF Brute")|| 
+        (B5===1 && D7!=="") || 
+        (B5===1 && B7===1))){
         return "Nombre de Ventaux"
-    } else {
-        if (
-            D3 == "" || D4 == ""
-            //     ||
-            // (D5=="" //&& E6!="A" && E6!="B" && E6!="C" && E6!="D" 
-            // && E6!="E" && E6!="F" && E6!=8 && E6!=9 && E6!=5 && E6!=6 && E6!=7
-            // )
-            ||
-            D6 == "" ||
-            ((D7 == "" && D6 != "MDF Brute" && D6 != "Aluminium"))
-        ) {
+    }else{
+        if(D3==="" || D4==="" || 
+        (D5==="" && E6!=="A" && E6!=="B" && E6!=="C" && E6!=="D" && E6!=="E" && E6!=="F" && E6!==8 && E6!==9 && E6!==5 && E6!==6 && E6!==7) 
+        || D6==="" || 
+        (D7==="" && D6!=="MDF Brute" && D6!=="Aluminium")){
             return ""
-        } else {
+        }else{
             return "Nombre de Ventaux"
         }
     }
 }
 
+
 // Largeur Precadre (Intérieur)
 {
+
     if ((B5 = 1 && (D8 != "" && D8 != 1))) {
         return "Largeur Precadre (Intérieur)"
     } else {
         if ((D3 == "" || D4 == "" ||
                 (D5 == "" && E6 != "TR" && E6 != "AL" && E6 != "SA") || D6 == "" ||
-                (D7 == "" || D6 != "MDF Brute" || D6 != "Aluminium") || D8 == "")) {
+                (D7 == "" && D6 != "MDF Brute" && D6 != "Aluminium") || D8 == "")) {
             ""
         } else {
             if (D8 == 2) {
@@ -93,7 +90,7 @@
 
 // Hauteur Ouvrant (mm)
 {
-    if ((ET(B9 == 1 && D9 == "") || ET(B9 == 0 && D9 != ""))) {
+    if (((B9 == 1 && D9 == "") || (B9 == 0 && D9 != ""))) {
         return "Hauteur Ouvrant (mm)"
     } else {
         if ((D3 == "" || D4 == "" ||
@@ -314,7 +311,7 @@
     }
 }
 
-// Epaisseur Mur(mm)
+// Epaisseur Mur(mm) (verifie E20 F20 )
 {
     if (ET(E4 == 1 && E5 == 7 && C17 != "" && D17 != "")) {
         return "Epaisseur Mur(mm)"
@@ -355,19 +352,19 @@
 
 // Couvre Joint Hauteur (mm)
 {
-    if (ET(B5 == 1 &&
-            OU(
-                ET(D20 != "Spécial" && D20 != "") ||
-                ET(D20 == "Spécial" && F20 != "")
+    if ((B5 == 1 &&
+            (
+                (D20 != "Spécial" && D20 != "") ||
+                (D20 == "Spécial" && F20 != "")
             ))) {
         return "Couvre Joint Hauteur (mm)"
     } else {
-        if (OU(D3 == "" || D3 == "Ouvrant Seul" || D4 == "" ||
-                ET(D5 == "" && E6 != "TR" && E6 != "AL" && E6 != "SA") ||
+        if ((D3 == "" || D3 == "Ouvrant Seul" || D4 == "" ||
+                (D5 == "" && E6 != "TR" && E6 != "AL" && E6 != "SA") ||
                 D6 == "" ||
-                ET(D7 == "" && D6 != "MDF Brute" && D6 != "Aluminium") ||
+                (D7 == "" && D6 != "MDF Brute" && D6 != "Aluminium") ||
                 D8 == "" ||
-                ET(D8 == 2 && D9 == "") ||
+                (D8 == 2 && D9 == "") ||
                 D10 == "" || D11 == "" || D13 == "" || D16 == "" || D20 == "" || E20 == 7 || D21 == "")) {
             return ""
         } else {
