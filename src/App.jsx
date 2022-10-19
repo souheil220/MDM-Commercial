@@ -51,7 +51,7 @@ function App() {
   }
 
   function handleNDVChange(newValue) {
-    console.log("lp " + newValue);
+    console.log(newValue);
     setlp(newValue);
   }
 
@@ -156,6 +156,7 @@ function App() {
             { text: "Technique", value: "PTEC" },
           ]}
           onChange={handleTDPChange}
+          onChangeMDF={handleMDPChange}
           onChangeGA={handleGAChange}
         />
       )}
@@ -194,6 +195,7 @@ function App() {
             },
           ]}
           onChange={handleMDFChange}
+          onChangeNDV={handleCOULEURChange}
         />
       )}
 
@@ -359,6 +361,7 @@ function App() {
             { text: "Oui", value: "Oui", code: "Oui" },
             { text: "Non", value: "Non", code: "Non" },
           ]}
+          onChangeSO={handleSOChange}
         />
       )}
 
@@ -392,6 +395,7 @@ function App() {
           ]}
           onChange={handleVIChange}
           onChangeGA={handleGAChange}
+          onChangeQu={handleQUChange}
         />
       )}
 
@@ -547,7 +551,7 @@ function App() {
       )}
       {cdcj && (
         <OuvrantCadre
-          id={cdcj}
+          id={"cdcj"}
           title={"Coupe De couvre Joint"}
           options={[
             { text: "", value: "" },
