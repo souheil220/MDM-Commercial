@@ -531,10 +531,10 @@ export default function OuvrantCadre(props) {
         ho.options[ho.selectedIndex].text === "" ||
         lo1.options[lo1.selectedIndex].text === "" ||
         ms.options[ms.selectedIndex].text === "" ||
-        el === "" ||
-        // vi === null &&
-        //   vi.options[vi.selectedIndex].text === "" &&
-        tdp.options[tdp.selectedIndex].text === "Porte De Passage"
+        (el === "" &&
+          // vi === null &&
+          //   vi.options[vi.selectedIndex].text === "" &&
+          tdp.options[tdp.selectedIndex].text === "Porte De Passage")
       ) {
         props.onChangeGA(false);
       } else {
@@ -806,7 +806,11 @@ export default function OuvrantCadre(props) {
     if (el !== "" && (props.id === "tdp" || props.id === "commande")) {
       var deactivate = null;
       if (props.id === "tdp" && so !== null) {
-        if (el === "Porte De Passage") {
+        if (
+          el === "Porte De Passage" &&
+          vi !== null &&
+          vi.options[vi.selectedIndex].text === ""
+        ) {
           deactivate = true;
         } else {
           deactivate = false;
@@ -950,7 +954,7 @@ export default function OuvrantCadre(props) {
     if (props.id === "so") {
       funcForVI(e, el);
       funcForGA(e, el, null);
-      funcForQu(e, el);
+      // funcForQu(e, el);
     }
 
     if (props.id === "ga") {
