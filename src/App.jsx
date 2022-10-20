@@ -16,6 +16,8 @@ function App() {
   const [ho, setho] = React.useState(false);
   const [lo1, setlo1] = React.useState(false);
   const [lo2, setlo2] = React.useState(false);
+  const [lo2Value, setlo2Value] = React.useState(false);
+  const [cuValue, setcuValue] = React.useState(false);
   const [ms, setlms] = React.useState(false);
   const [se, setlse] = React.useState(false);
   const [pro, setlpro] = React.useState(false);
@@ -66,6 +68,14 @@ function App() {
   }
   function handleLO1Change(newValue) {
     setlo2(newValue);
+  }
+
+  function handleLO2Value(newValue) {
+    setlo2Value(newValue);
+  }
+
+  function handleCUValue(newValue) {
+    setcuValue(newValue);
   }
 
   function handleMSChange(newValue) {
@@ -247,6 +257,7 @@ function App() {
             { text: "1859", value: "1859", code: "1859" },
           ]}
           onChange={handleLPChange}
+          onChangeLO2Value={handleLO2Value}
         />
       )}
 
@@ -281,6 +292,7 @@ function App() {
           onChange={handleLO1Change}
           onChangeMS={handleMSChange}
           onChangePro={handleProChange}
+          onChangeLO2Value={handleLO2Value}
         />
       )}
 
@@ -291,7 +303,7 @@ function App() {
               <h6>Largueur 2eme Ovrant (mm)</h6>
             </Col>
             <Col xs={6}>
-              <p>1023</p>
+              <p>{lo2Value}</p>
             </Col>
             <Col>
               <p></p>
@@ -492,13 +504,14 @@ function App() {
               code: "160",
             },
             {
-              text: "Spécial",
-              value: "Spécial",
+              text: "Spéciale",
+              value: "Spéciale",
               code: "Epaisseur",
             },
           ]}
           onChange={handleCUChange}
           onChangeCJH={handleCJHChange}
+          onChangeCUValue={handleCUValue}
         />
       )}
 
@@ -509,7 +522,7 @@ function App() {
               <h6>Cadre utilisé</h6>
             </Col>
             <Col xs={6}>
-              <h6>160</h6>
+              <h6>{cuValue}</h6>
             </Col>
             <Col>
               <h6>Embochure</h6>

@@ -8,6 +8,8 @@ export default function OuvrantCadre(props) {
   const [showText, setShowText] = useState("");
   const [showHauteur, setShowHauteur] = useState(false);
   const [showLargueur, setShowLargueur] = useState(false);
+  const [showEpaisseur, setShowEpesseur] = useState(false);
+  const [largeur, setLargeur] = useState(false);
 
   const [inputB5, setInputB5] = useState(1);
   const [inputB9, setInputB9] = useState(1);
@@ -34,6 +36,8 @@ export default function OuvrantCadre(props) {
   var em = document.getElementById("em");
   var cu = document.getElementById("cu");
   var cjh = document.getElementById("cjh");
+
+  var lO2ActivationFunc = null;
 
   const funcFordisplayTp = (el) => {
     if (el !== "") {
@@ -257,9 +261,11 @@ export default function OuvrantCadre(props) {
       (inputB5 === 1 && el !== "" && el !== "Spéciale") ||
       (inputB9 === 1 &&
         el === "Spéciale" &&
+        document.getElementById("ho_special_value") !== null &&
         document.getElementById("ho_special_value").textContent !== "") ||
       (inputB9 === 0 &&
         el === "Spéciale" &&
+        document.getElementById("ho_special_value") !== null &&
         document.getElementById("ho_special_value").textContent !== "")
     ) {
       if (parseInt(ndv.options[ndv.selectedIndex].text) === 2) {
@@ -650,7 +656,13 @@ export default function OuvrantCadre(props) {
     if (el === "") {
       props.onChange(false);
     } else {
-      props.onChange(true);
+      if (el === "Spéciale") {
+        setShowEpesseur(true);
+        props.onChange(false);
+      } else {
+        setShowEpesseur(false);
+        props.onChange(true);
+      }
     }
   };
 
@@ -758,6 +770,26 @@ export default function OuvrantCadre(props) {
     }
   };
 
+  const funcCalculateLO2 = (lp, lo1, largeur) => {
+    props.onChangeLO2Value(parseInt(lp) - 13 - parseInt(lo1) - largeur);
+  };
+
+  const funcCalculateCU = (lp, lo1, largeur) => {
+    props.onChangeCUValue(parseInt(lp) - 13 - parseInt(lo1) - largeur);
+  };
+
+  const handleLargeurChange = (event) => {
+    setLargeur(event.target.value);
+    props.onChange(true);
+    funcCalculateLO2(lp.options[lp.selectedIndex].text, event.target.value, 0);
+  };
+
+  const handleEpaisseurChange = (event) => {
+    setLargeur(event.target.value);
+    props.onChange(true);
+    funcCalculateCU(lp.options[lp.selectedIndex].text, event.target.value, 0);
+  };
+
   const handleText = (e) => {
     const el = document.getElementById(props.id).options[
       document.getElementById(props.id).selectedIndex
@@ -850,23 +882,46 @@ export default function OuvrantCadre(props) {
     }
 
     // Mécanisation de Serrure
-    if (props.id === "lo1") {
-      if (el === "Spéciale") {
-        setShowLargueur(true);
+    if (props.id === "lo1" || props.id === "lp") {
+      if (props.id === "lp" && lo1 !== null) {
+        if (
+          lo1.options[lo1.selectedIndex].text !== "Spécial" ||
+          ((lo1.options[lo1.selectedIndex].text !== "Spécial") !== "" &&
+            (lo1.options[lo1.selectedIndex].text !== "Spécial") !== "Spéciale")
+        ) {
+          funcCalculateLO2(el, lo1.options[lo1.selectedIndex].text);
+          setInputB13(1);
+        } else {
+          setInputB13(0);
+        }
       } else {
-        setShowLargueur(false);
+        if (el === "Spéciale") {
+          setShowLargueur(true);
+        } else {
+          setShowLargueur(false);
+        }
+
+        if (el !== "Spécial" || (el !== "" && el !== "Spéciale")) {
+          funcCalculateLO2(lp.options[lp.selectedIndex].text, el, 0);
+          setInputB13(1);
+        } else {
+          setInputB13(0);
+        }
+
+        var ndv = document.getElementById("ndv");
+
+        if (parseInt(ndv.options[ndv.selectedIndex].text) === 2) {
+          if (el !== "spécial") {
+            funcForLO2(e, el, false);
+          } else {
+            console.log(props.onChange);
+            // lO2ActivationFunc = props.onChange;
+            // console.log(lO2ActivationFunc);
+          }
+        }
+        funcForMS(e, el);
+        funcForPro(e, el, true);
       }
-      if (el !== "Spécial" || (el !== "" && el !== "Spéciale")) {
-        setInputB13(1);
-      } else {
-        setInputB13(0);
-      }
-      var ndv = document.getElementById("ndv");
-      if (parseInt(ndv.options[ndv.selectedIndex].text) === 2) {
-        funcForLO2(e, el, false);
-      }
-      funcForMS(e, el);
-      funcForPro(e, el, true);
     }
 
     if (props.id === "ms") {
@@ -883,7 +938,9 @@ export default function OuvrantCadre(props) {
     }
 
     if (props.id === "se") {
-      funcForSO(e, el, inputB14, "se");
+      if (ms.options[ms.selectedIndex].text !== "Sans Mecanisation") {
+        funcForSO(e, el, inputB14, "se");
+      }
     }
 
     if (props.id === "pro") {
@@ -940,23 +997,50 @@ export default function OuvrantCadre(props) {
         </Col>
 
         <Col xs={4}>
-          {!showHauteur && <h6 id={props.id + "_h6"}>{showText}</h6>}
           {props.id === "ho" ? (
             showHauteur && (
-              <div style={{ display: "flex" }}>
-                <h6 id={props.id + "_special"}>Hauteur</h6>
-                <input id={props.id + "_special_value"} type="number" />
-              </div>
+              <>
+                {!showHauteur && <h6 id={props.id + "_h6"}>{showText}</h6>}
+                <div style={{ display: "flex" }}>
+                  <h6 id={props.id + "_special"}>Hauteur</h6>
+                  <input id={props.id + "_special_value"} type="number" />
+                </div>
+              </>
             )
           ) : props.id === "lo1" ? (
             showLargueur && (
-              <div style={{ display: "flex" }}>
-                <h6 id={props.id + "_special"}>Largeur</h6>
-                <input id={props.id + "_special_value"} type="number" />
-              </div>
+              <>
+                {!showLargueur && <h6 id={props.id + "_h6"}>{showText}</h6>}
+                <div style={{ display: "flex" }}>
+                  <h6 id={props.id + "_special"}>Largeur</h6>
+                  <input
+                    id={props.id + "_special_value"}
+                    type="number"
+                    value={largeur}
+                    onChange={handleLargeurChange}
+                  />
+                </div>
+              </>
+            )
+          ) : props.id === "em" ? (
+            showEpaisseur && (
+              <>
+                {!showEpaisseur && <h6 id={props.id + "_h6"}>{showText}</h6>}
+                <div style={{ display: "flex" }}>
+                  <h6 id={props.id + "_special"}>Epaisseur</h6>
+                  <input
+                    id={props.id + "_special_value"}
+                    type="number"
+                    value={largeur}
+                    onChange={handleEpaisseurChange}
+                  />
+                </div>
+              </>
             )
           ) : (
-            <></>
+            <>
+              <h6 id={props.id + "_h6"}>{showText}</h6>
+            </>
           )}
         </Col>
       </Row>
