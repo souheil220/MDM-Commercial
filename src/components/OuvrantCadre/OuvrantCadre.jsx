@@ -3,15 +3,17 @@ import Form from "react-bootstrap/Form";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
+import InputGroup from "react-bootstrap/InputGroup";
+import "./OuvrantCadre.css";
 
 export default function OuvrantCadre(props) {
   const [showText, setShowText] = useState("");
   const [showHauteur, setShowHauteur] = useState(false);
   const [showLargueur, setShowLargueur] = useState(false);
   const [showEpaisseur, setShowEpesseur] = useState(false);
-  const [largeur, setLargeur] = useState(false);
+  const [largeur, setLargeur] = useState(0);
+  const [epaisseur, setEpaisseur] = useState(0);
 
-  const [inputB5, setInputB5] = useState(1);
   const [inputB9, setInputB9] = useState(1);
   const [inputB7, setInputB7] = useState(0);
   const [inputB13, setInputB13] = useState(1);
@@ -37,11 +39,9 @@ export default function OuvrantCadre(props) {
   var cu = document.getElementById("cu");
   var cjh = document.getElementById("cjh");
 
-  var lO2ActivationFunc = null;
-
   const funcFordisplayTp = (el) => {
     if (el !== "") {
-      setInputB5(0);
+      props.funcInputB5(0);
       props.onChange(true);
     } else {
       props.onChange(false);
@@ -53,10 +53,11 @@ export default function OuvrantCadre(props) {
     var tdp = document.getElementById("tdp");
     if (onchangeMDP) {
       if (FromText === "Cadre Seul") {
-        setInputB5(1);
+        props.funcInputB5(1);
         props.onChangeCS(false);
       } else {
         if (tdp !== null && tdp.options[tdp.selectedIndex].text !== "") {
+          props.funcInputB5(0);
           props.onChangeCS(true);
         }
       }
@@ -65,7 +66,8 @@ export default function OuvrantCadre(props) {
         el !== "" &&
         commande.options[commande.selectedIndex].text !== "Cadre Seul"
       ) {
-        setInputB5(0);
+        console.log("onchangeMDP " + onchangeMDP);
+        props.funcInputB5(0);
         props.onChange(true);
       } else {
         props.onChange(false);
@@ -80,7 +82,7 @@ export default function OuvrantCadre(props) {
       if (
         commande.options[commande.selectedIndex].text === "" ||
         tdp.options[commande.selectedIndex].text === "" ||
-        (el === "" && inputB5 !== 1)
+        (el === "" && props.inputB5Value !== 1)
       ) {
         return props.onChange(false);
       } else {
@@ -91,7 +93,7 @@ export default function OuvrantCadre(props) {
 
   const funcForCou = (e, el) => {
     if (
-      inputB5 === 1 &&
+      props.inputB5Value === 1 &&
       el !== "" &&
       el !== "Aluminium" &&
       el !== "Inox" &&
@@ -134,12 +136,12 @@ export default function OuvrantCadre(props) {
       props.onChangeNDV(true);
     } else {
       if (
-        (inputB5 === 1 &&
+        (props.inputB5Value === 1 &&
           el === "" &&
           commande.options[commande.selectedIndex].text === "Cadre Seul" &&
           mdf.options[mdf.selectedIndex].text === "MDF Brute") ||
-        (inputB5 === 1 && el !== "") ||
-        (inputB5 === 1 && inputB7 === 1)
+        (props.inputB5Value === 1 && el !== "") ||
+        (props.inputB5Value === 1 && inputB7 === 1)
       ) {
         props.onChange(true);
       } else {
@@ -172,8 +174,7 @@ export default function OuvrantCadre(props) {
   };
 
   const funcForLP = (e, el) => {
-    if (inputB5 === 1 && el !== "" && parseInt(el) !== 1) {
-      console.log("inputB5", inputB5);
+    if (props.inputB5Value === 1 && el !== "" && parseInt(el) !== 1) {
       props.onChange(true);
       props.onChangeCS(false);
     } else {
@@ -258,7 +259,7 @@ export default function OuvrantCadre(props) {
       setShowHauteur(false);
     }
     if (
-      (inputB5 === 1 && el !== "" && el !== "Spéciale") ||
+      (props.inputB5Value === 1 && el !== "" && el !== "Spéciale") ||
       (inputB9 === 1 &&
         el === "Spéciale" &&
         document.getElementById("ho_special_value") !== null &&
@@ -544,7 +545,7 @@ export default function OuvrantCadre(props) {
   };
 
   const funcForQu = (e, el) => {
-    if (inputB5 === 1 && so !== null) {
+    if (props.inputB5Value === 1 && so !== null) {
       props.onChange(true);
       props.onChangeQu(true);
     } else {
@@ -599,53 +600,70 @@ export default function OuvrantCadre(props) {
     }
   };
 
-  const funcForEM = (e, el) => {
+  const funcForEM = (e, el, from) => {
     if (
-      parseInt(document.getElementById("tdp_h6").textContent) === 1 &&
-      parseInt(document.getElementById("mdp_h6").textContent) === 7 &&
-      vi !== null &&
-      vi.options[vi.selectedIndex].text !== ""
+      from === "commande" &&
+      commande.options[commande.selectedIndex].text === "Ouvrant Seul"
     ) {
-      props.onChange(true);
+      props.onChangeEm(false);
+    } else if (
+      from === "commande" &&
+      commande.options[commande.selectedIndex].text !== "Ouvrant Seul"
+    ) {
+      props.onChangeEm(true);
     } else {
+      console.log(from);
       if (
-        inputB5 === 1 &&
-        el !== "" &&
-        se.options[se.selectedIndex].text !== ""
+        parseInt(document.getElementById("tdp_h6").textContent) === 1 &&
+        parseInt(document.getElementById("mdp_h6").textContent) === 7 &&
+        vi !== null &&
+        vi.options[vi.selectedIndex].text !== ""
       ) {
         props.onChange(true);
       } else {
         if (
-          document.getElementById("tdp_h6").textContent === "T" &&
-          document.getElementById("mdf_h6").textContent === "AL"
+          props.inputB5Value === 1 &&
+          el !== "" &&
+          se.options[se.selectedIndex].text !== ""
         ) {
           props.onChange(true);
         } else {
           if (
-            commande.options[commande.selectedIndex].text === "" ||
-            commande.options[commande.selectedIndex].text === "Ouvrant Seul" ||
-            tdp.options[tdp.selectedIndex].text === "" ||
-            (mdp.options[mdp.selectedIndex].text === "" &&
-              document.getElementById("mdf_h6").textContent !== "TR" &&
-              document.getElementById("mdf_h6").textContent !== "AL" &&
-              document.getElementById("mdf_h6").textContent !== "SA") ||
-            mdf.options[mdf.selectedIndex].text === "" ||
-            (couleur.options[couleur.selectedIndex].text === "" &&
-              mdf.options[mdf.selectedIndex].text !== "MDF Brute" &&
-              mdf.options[mdf.selectedIndex].text !== "Aluminium") ||
-            ndv.options[ndv.selectedIndex].text === "" ||
-            (parseInt(ndv.options[ndv.selectedIndex].text) === 2 &&
-              (lp === null || lp.options[lp.selectedIndex].text === "")) ||
-            ho.options[ho.selectedIndex].text === "" ||
-            lo1.options[lo1.selectedIndex].text === "" ||
-            ms.options[ms.selectedIndex].text === "" ||
-            so.options[so.selectedIndex].text === "" ||
-            el === "" ||
-            (el === "" && document.getElementById("tdp_h6").textContent === "T")
+            document.getElementById("tdp_h6").textContent === "T" &&
+            document.getElementById("mdf_h6").textContent === "AL"
           ) {
-            props.onChange(false);
-          } else {
             props.onChange(true);
+          } else {
+            if (
+              commande.options[commande.selectedIndex].text === "" ||
+              commande.options[commande.selectedIndex].text ===
+                "Ouvrant Seul" ||
+              tdp.options[tdp.selectedIndex].text === "" ||
+              (mdp.options[mdp.selectedIndex].text === "" &&
+                document.getElementById("mdf_h6").textContent !== "TR" &&
+                document.getElementById("mdf_h6").textContent !== "AL" &&
+                document.getElementById("mdf_h6").textContent !== "SA") ||
+              mdf.options[mdf.selectedIndex].text === "" ||
+              (couleur.options[couleur.selectedIndex].text === "" &&
+                mdf.options[mdf.selectedIndex].text !== "MDF Brute" &&
+                mdf.options[mdf.selectedIndex].text !== "Aluminium") ||
+              ndv.options[ndv.selectedIndex].text === "" ||
+              (parseInt(ndv.options[ndv.selectedIndex].text) === 2 &&
+                lp !== null &&
+                lp.options[lp.selectedIndex].text === "") ||
+              ho.options[ho.selectedIndex].text === "" ||
+              lo1.options[lo1.selectedIndex].text === "" ||
+              ms.options[ms.selectedIndex].text === "" ||
+              so.options[so.selectedIndex].text === "" ||
+              el === "" ||
+              (el === "" &&
+                document.getElementById("tdp_h6").textContent === "T")
+            ) {
+              props.onChange(false);
+            } else {
+              console.log(props.onChange);
+              props.onChange(true);
+            }
           }
         }
       }
@@ -658,9 +676,16 @@ export default function OuvrantCadre(props) {
     } else {
       if (el === "Spéciale") {
         setShowEpesseur(true);
-        props.onChange(false);
+        props.onChangeCUValue("0");
       } else {
         setShowEpesseur(false);
+        if (el === "130-->165") {
+          props.onChangeCUValue("100");
+        } else if (el === "160-->195") {
+          props.onChangeCUValue("130");
+        } else {
+          props.onChangeCUValue("160");
+        }
         props.onChange(true);
       }
     }
@@ -668,7 +693,7 @@ export default function OuvrantCadre(props) {
 
   const funcForCJH = (e, el) => {
     if (
-      inputB5 === 1 &&
+      props.inputB5Value === 1 &&
       ((el !== "Spécial" && el !== "") || el === "Spécial") //&& F20 != ""
     ) {
       props.onChangeCJH(true);
@@ -704,7 +729,7 @@ export default function OuvrantCadre(props) {
   };
 
   const funcForCJL = (e, el) => {
-    if (inputB5 === 1 && el !== "") {
+    if (props.inputB5Value === 1 && el !== "") {
       props.onChange(true);
     } else {
       if (
@@ -737,7 +762,7 @@ export default function OuvrantCadre(props) {
   };
 
   const funcForCDCJ = (e, el) => {
-    if (inputB5 === 1 && el !== "") {
+    if (props.inputB5Value === 1 && el !== "") {
       props.onChange(true);
     } else {
       if (
@@ -785,9 +810,7 @@ export default function OuvrantCadre(props) {
   };
 
   const handleEpaisseurChange = (event) => {
-    setLargeur(event.target.value);
-    props.onChange(true);
-    funcCalculateCU(lp.options[lp.selectedIndex].text, event.target.value, 0);
+    setEpaisseur(event.target.value);
   };
 
   const handleText = (e) => {
@@ -797,15 +820,27 @@ export default function OuvrantCadre(props) {
 
     // display TP
     if (el !== "" && props.id === "commande") {
-      console.log(el);
-
+      var commande = document.getElementById("commande");
+      setShowText(props.options[commande.selectedIndex].code);
       funcFordisplayTp(el);
+      if (document.getElementById("qu") !== null) {
+        funcForEM(
+          e,
+          document.getElementById("qu").options[
+            document.getElementById("qu").selectedIndex
+          ].text,
+          "commande"
+        );
+      }
     }
 
     // display MDP
     if (el !== "" && (props.id === "tdp" || props.id === "commande")) {
+      var so = document.getElementById("so");
+      var tdp = document.getElementById("tdp");
       var deactivate = null;
       if (props.id === "tdp" && so !== null) {
+        console.log(so === null);
         if (
           el === "Porte De Passage" &&
           vi !== null &&
@@ -829,6 +864,9 @@ export default function OuvrantCadre(props) {
       ) {
         funcForMDF(e, el, "tdp");
       }
+      if (props.id === "tdp") {
+        setShowText(props.options[tdp.selectedIndex].code);
+      }
       funcForMDP(
         onchangeMDP,
         el,
@@ -843,7 +881,6 @@ export default function OuvrantCadre(props) {
 
     // display Couleur
     if (props.id === "mdf") {
-      console.log("couleur");
       funcForCou(e, el);
     }
 
@@ -854,6 +891,10 @@ export default function OuvrantCadre(props) {
         funcForNDV(e, el, "mdf");
       } else {
         funcForNDV(e, el, "");
+      }
+      if (props.id === "couleur") {
+        var couleur = document.getElementById("couleur");
+        setShowText(props.options[couleur.selectedIndex].code);
       }
     }
 
@@ -873,6 +914,8 @@ export default function OuvrantCadre(props) {
         funcForHO(e, el, "nvd");
         props.onChangeLO2(false);
       }
+      var ndv = document.getElementById("ndv");
+      setShowText(props.options[ndv.selectedIndex].code);
     }
 
     // Hauteur Ouvrant (mm)
@@ -887,6 +930,7 @@ export default function OuvrantCadre(props) {
 
     // Mécanisation de Serrure
     if (props.id === "lo1" || props.id === "lp") {
+      var ndv = document.getElementById("ndv");
       if (props.id === "lp" && lo1 !== null) {
         if (
           lo1.options[lo1.selectedIndex].text !== "Spécial" ||
@@ -904,15 +948,16 @@ export default function OuvrantCadre(props) {
         } else {
           setShowLargueur(false);
         }
-
-        if (el !== "Spécial" || (el !== "" && el !== "Spéciale")) {
+        if (
+          el !== "" &&
+          el !== "Spéciale" &&
+          parseInt(ndv.options[ndv.selectedIndex].text) === 2
+        ) {
           funcCalculateLO2(lp.options[lp.selectedIndex].text, el, 0);
           setInputB13(1);
         } else {
           setInputB13(0);
         }
-
-        var ndv = document.getElementById("ndv");
 
         if (parseInt(ndv.options[ndv.selectedIndex].text) === 2) {
           if (el !== "spécial") {
@@ -939,6 +984,8 @@ export default function OuvrantCadre(props) {
       }
       funcForSE(e, el);
       funcForSO(e, el, B14);
+      var ms = document.getElementById("ms");
+      setShowText(props.options[ms.selectedIndex].code);
     }
 
     if (props.id === "se") {
@@ -954,6 +1001,8 @@ export default function OuvrantCadre(props) {
     if (props.id === "so") {
       funcForVI(e, el);
       funcForGA(e, el, null);
+      var so = document.getElementById("so");
+      setShowText(props.options[so.selectedIndex].code);
       // funcForQu(e, el);
     }
 
@@ -962,29 +1011,42 @@ export default function OuvrantCadre(props) {
     }
 
     if (props.id === "qu") {
-      funcForEM(e, el);
+      funcForEM(e, el, "qu");
     }
 
     if (props.id === "em") {
       funcForCU(e, el);
       funcForCJH(e, el);
+      if (el !== "Spéciale") {
+        var em = document.getElementById("em");
+        setShowText(props.options[em.selectedIndex].code);
+      }
     }
 
     if (props.id === "cjh") {
       funcForCJL(e, el);
+      var cjh = document.getElementById("cjh");
+      setShowText(props.options[cjh.selectedIndex].code);
     }
 
     if (props.id === "cjl") {
       funcForCDCJ(e, el);
+      var cjl = document.getElementById("cjl");
+      setShowText(props.options[cjl.selectedIndex].code);
     }
 
-    setShowText(e.target.value);
+    if (props.id === "cdcj") {
+      var cdcj = document.getElementById("cdcj");
+      setShowText(props.options[cdcj.selectedIndex].code);
+    }
+
+    console.log(props.inputB5Value);
   };
 
   return (
-    <Container>
+    <Container className={"conteneur"}>
       <Row>
-        <h1 id={props.id + "_B4"} type="text" hidden></h1>
+        <h1 className="center" id={props.id + "_B4"} type="text" hidden></h1>
         <Col>
           <div>
             <h6>{props.title}</h6>
@@ -1004,46 +1066,78 @@ export default function OuvrantCadre(props) {
           {props.id === "ho" ? (
             showHauteur && (
               <>
-                {!showHauteur && <h6 id={props.id + "_h6"}>{showText}</h6>}
+                {!showHauteur && (
+                  <h6 className="center" id={props.id + "_h6"}>
+                    {showText}
+                  </h6>
+                )}
                 <div style={{ display: "flex" }}>
-                  <h6 id={props.id + "_special"}>Hauteur</h6>
-                  <input id={props.id + "_special_value"} type="number" />
+                  <InputGroup className="mb-3">
+                    <InputGroup.Text id={props.id + "_special"}>
+                      Hauteur
+                    </InputGroup.Text>
+                    <Form.Control
+                      id={props.id + "_special_value"}
+                      type="number"
+                    />
+                  </InputGroup>
                 </div>
               </>
             )
           ) : props.id === "lo1" ? (
             showLargueur && (
               <>
-                {!showLargueur && <h6 id={props.id + "_h6"}>{showText}</h6>}
+                {!showLargueur && (
+                  <h6 className="center" id={props.id + "_h6"}>
+                    {showText}
+                  </h6>
+                )}
                 <div style={{ display: "flex" }}>
-                  <h6 id={props.id + "_special"}>Largeur</h6>
-                  <input
-                    id={props.id + "_special_value"}
-                    type="number"
-                    value={largeur}
-                    onChange={handleLargeurChange}
-                  />
+                  <InputGroup className="mb-3">
+                    <InputGroup.Text id={props.id + "_special"}>
+                      Largeur
+                    </InputGroup.Text>
+                    <Form.Control
+                      id={props.id + "_special_value"}
+                      type="number"
+                      value={largeur}
+                      onChange={handleLargeurChange}
+                    />
+                  </InputGroup>
                 </div>
               </>
             )
           ) : props.id === "em" ? (
-            showEpaisseur && (
+            showEpaisseur ? (
               <>
-                {!showEpaisseur && <h6 id={props.id + "_h6"}>{showText}</h6>}
+                {!showEpaisseur && (
+                  <h6 className="center" id={props.id + "_h6"}>
+                    {showText}
+                  </h6>
+                )}
                 <div style={{ display: "flex" }}>
-                  <h6 id={props.id + "_special"}>Epaisseur</h6>
-                  <input
-                    id={props.id + "_special_value"}
-                    type="number"
-                    value={largeur}
-                    onChange={handleEpaisseurChange}
-                  />
+                  <InputGroup className="mb-3">
+                    <InputGroup.Text id={props.id + "_special"}>
+                      Epaisseur
+                    </InputGroup.Text>
+                    <Form.Control
+                      id={props.id + "_special_value"}
+                      type="number"
+                      value={epaisseur}
+                      onChange={handleEpaisseurChange}
+                      max="90"
+                    />
+                  </InputGroup>
                 </div>
               </>
+            ) : (
+              <h6>{showText}</h6>
             )
           ) : (
             <>
-              <h6 id={props.id + "_h6"}>{showText}</h6>
+              <h6 className="center" id={props.id + "_h6"}>
+                {showText}
+              </h6>
             </>
           )}
         </Col>

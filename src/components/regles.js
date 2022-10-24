@@ -50,18 +50,18 @@
 // Nombre de Ventaux
 
 {
-   
-    if(((B5===1&& D7===""&& D3==="Cadre Seul"&& D6==="MDF Brute")|| 
-        (B5===1 && D7!=="") || 
-        (B5===1 && B7===1))){
+
+    if (((B5 === 1 && D7 === "" && D3 === "Cadre Seul" && D6 === "MDF Brute") ||
+            (B5 === 1 && D7 !== "") ||
+            (B5 === 1 && B7 === 1))) {
         return "Nombre de Ventaux"
-    }else{
-        if(D3==="" || D4==="" || 
-        (D5==="" && E6!=="A" && E6!=="B" && E6!=="C" && E6!=="D" && E6!=="E" && E6!=="F" && E6!==8 && E6!==9 && E6!==5 && E6!==6 && E6!==7) 
-        || D6==="" || 
-        (D7==="" && D6!=="MDF Brute" && D6!=="Aluminium")){
+    } else {
+        if (D3 === "" || D4 === "" ||
+            (D5 === "" && E6 !== "A" && E6 !== "B" && E6 !== "C" && E6 !== "D" && E6 !== "E" && E6 !== "F" && E6 !== 8 && E6 !== 9 && E6 !== 5 && E6 !== 6 && E6 !== 7) ||
+            D6 === "" ||
+            (D7 === "" && D6 !== "MDF Brute" && D6 !== "Aluminium")) {
             return ""
-        }else{
+        } else {
             return "Nombre de Ventaux"
         }
     }
@@ -313,24 +313,24 @@
 
 // Epaisseur Mur(mm) (verifie E20 F20 )
 {
-    if (ET(E4 == 1 && E5 == 7 && C17 != "" && D17 != "")) {
+    if ((E4 == 1 && E5 == 7 && C17 != "" && D17 != "")) {
         return "Epaisseur Mur(mm)"
     } else {
-        if (ET(B5 == 1 && D19 != "" && D14 != "")) {
+        if ((B5 == 1 && D19 != "" && D14 != "")) {
             return "Epaisseur Mur(mm)"
         } else {
-            if (ET(E4 == "T" && E6 == "AL")) {
+            if ((E4 == "T" && E6 == "AL")) {
                 return "Epaisseur Mur(mm)"
             } else {
-                if (OU(D3 == "" || D3 == "Ouvrant Seul" || D4 == "" ||
-                        ET(D5 == "" && E6 != "TR" && E6 != "AL" && E6 != "SA") ||
+                if ((D3 == "" || D3 == "Ouvrant Seul" || D4 == "" ||
+                        (D5 == "" && E6 != "TR" && E6 != "AL" && E6 != "SA") ||
                         D6 == "" ||
-                        ET(D7 == "" && D6 != "MDF Brute" && D6 != "Aluminium") ||
+                        (D7 == "" && D6 != "MDF Brute" && D6 != "Aluminium") ||
                         D8 == "" ||
-                        ET(D8 == 2 && D9 == "") ||
+                        (D8 == 2 && D9 == "") ||
                         D10 == "" || D11 == "" || D13 == "" || D16 == "" ||
-                        OU(D19 == "" ||
-                            ET(D19 == "" && E4 == "T")))) {
+                        (D19 == "" ||
+                            (D19 == "" && E4 == "T")))) {
                     return ""
                 } else {
                     return "Epaisseur Mur(mm)"
@@ -407,6 +407,108 @@
             return ""
         } else {
             return "Coupe De couvre Joint"
+        }
+    }
+}
+
+// Code Model
+{
+    if (D5 === "Star Massif") {
+        return ""
+    } else {
+        return "F" + D5 + E7
+    }
+}
+
+// Code protecteur
+{
+    if (D15 === "Sans Protecteur") {
+        return ""
+    } else {
+        if (D15 === "1 Face") {
+            return "P1F" + D11
+        } else {
+            return "P2F" + D11
+        }
+    }
+}
+
+// Code vitrage
+{
+    if (D17 === "Sans Vitre") {
+        return ""
+    } else {
+        if (D17 === "Vitrage Haut") {
+            return "VH" + E7 + D11
+        } else {
+            if (D17 === "Vitrage Bas") {
+                return "VB" + E7 + D11
+            } else {
+                if (D17 === "V5AL") {
+                    return "V5AL3+3"
+                } else {
+                    if (D17 === "V4AL") {
+                        return "V4AL3+3"
+                    } else {
+                        if (D17 === "Vitrage Côté") {
+                            return "VB" + E7 + D11
+                        } else {
+                            return "VO" + E7 + D11
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+// Code grille
+{
+    if (D18 === "Sans Mécanisation") {
+        return ""
+    } else {
+        if (D18 === "Mecanisation de grille et grille d'Airation") {
+            if (E7 === "FCH" || E7 === "FAC") {
+                return "GAM"
+            } else {
+                return "GAN"
+            }
+        } else {
+            return ""
+        }
+    }
+}
+
+// Code Embochure
+{
+    if (D8 === 1) {
+        if (F21 === "") {
+            return ""
+        } else {
+            return "EM" + D10 + D11 + F21 + E7
+        }
+    } else {
+        if (F21 === "") {
+            return ""
+        } else {
+            return "EM" + D10 + D9 + F21 + E7
+        }
+    }
+}
+
+// Code Serure
+{
+    if (D4 === "Porte De Passage" || D4 === "Porte Coupe-Feu 30mm" || D4 === "Technique") {
+        if (D8 === 1) {
+            return "S" + E13 + G13 + E16
+        } else {
+            return "S" + E13 + G13 + E16 + G16
+        }
+    } else {
+        if (D4 === "Porte D'Entrée Blindée") {
+            return "S" + E13 + G14 + E16
+        } else {
+            return "S" + E13 + G13 + E16
         }
     }
 }

@@ -1,0 +1,15 @@
+.conteneur {
+  margin-bottom: 0.5rem;
+}
+h6 {
+  height: 100%;
+}
+h6 {
+  vertical-align: middle;
+}
+.center {
+  margin: auto;
+  /* width: 60%; */
+  /* border: 3px solid #73AD21; */
+  padding: 10px;
+}
