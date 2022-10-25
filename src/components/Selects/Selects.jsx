@@ -1,17 +1,19 @@
-import React from "react";
+import React, { useContext } from "react";
 
 import "bootstrap/dist/css/bootstrap.min.css";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
+import CartContext from "../../context/cart-context";
 import Button from "react-bootstrap/Button";
 import "./Selects.css";
-
+import { v4 as uuidv4 } from "uuid";
 import Card from "../UI/Card";
 
 import OuvrantCadre from "../OuvrantCadre/OuvrantCadre";
 
 export default function Selects() {
+  const cartCxt = useContext(CartContext);
   const [inputB5, setInputB5] = React.useState(1);
 
   const [tdp, settdp] = React.useState(false);
@@ -41,6 +43,7 @@ export default function Selects() {
   const [firstName, setFirstName] = React.useState("");
 
   var commande_ouvrant = [];
+  var commande_ouvrant_line = [];
 
   function handleCOMMANDEChange(newValue) {
     settdp(newValue);
@@ -139,12 +142,12 @@ export default function Selects() {
 
   function checkIfNull(data, text) {
     if (text && data !== null) {
-      return commande_ouvrant.push(data.textContent);
+      return data.textContent;
     } else {
       if (data !== null && data.options[data.selectedIndex].text !== "") {
-        commande_ouvrant.push(data.options[data.selectedIndex].text);
+        return data.options[data.selectedIndex].text;
       } else {
-        return commande_ouvrant.push("");
+        return "";
       }
     }
   }
@@ -314,67 +317,117 @@ export default function Selects() {
     // (checkIfNull(document.getElementById("mdf"), false));
     // (checkIfNull(document.getElementById("couleur"), false));
     // (checkIfNull(document.getElementById("ndv"), false));
-    checkIfNull(document.getElementById("lp"), false);
-    checkIfNull(document.getElementById("ho"), false);
-    checkIfNull(document.getElementById("lo1"), false);
-    // (checkIfNull(document.getElementById("lo2_value"), true));
-    checkIfNull(document.getElementById("ms"), false);
-    checkIfNull(document.getElementById("se"), false);
-    checkIfNull(document.getElementById("pro"), false);
-    checkIfNull(document.getElementById("so"), false);
-    checkIfNull(document.getElementById("vi"), false);
-    checkIfNull(document.getElementById("ga"), false);
-    checkIfNull(document.getElementById("qu"), false);
-    // (checkIfNull(document.getElementById("em"), false));
-    // (checkIfNull(document.getElementById("cu_value"), true));
-    // (checkIfNull(document.getElementById("cjh"), false));
-    // (checkIfNull(document.getElementById("cjl"), false));
-    // (checkIfNull(document.getElementById("cdcj"), false));
-    console.log(
-      codeModel(
+    // checkIfNull(document.getElementById("lp"), false);
+    // checkIfNull(document.getElementById("ho"), false);
+    // checkIfNull(document.getElementById("lo1"), false);
+    // // (checkIfNull(document.getElementById("lo2_value"), true));
+    // checkIfNull(document.getElementById("ms"), false);
+    // checkIfNull(document.getElementById("se"), false);
+    // checkIfNull(document.getElementById("pro"), false);
+    // checkIfNull(document.getElementById("so"), false);
+    // checkIfNull(document.getElementById("vi"), false);
+    // checkIfNull(document.getElementById("ga"), false);
+    // checkIfNull(document.getElementById("qu"), false);
+    // // (checkIfNull(document.getElementById("em"), false));
+    // // (checkIfNull(document.getElementById("cu_value"), true));
+    // // (checkIfNull(document.getElementById("cjh"), false));
+    // // (checkIfNull(document.getElementById("cjl"), false));
+    // // (checkIfNull(document.getElementById("cdcj"), false));
+
+    // commande_ouvrant_line.push(
+    //   codeModel(
+    //     document.getElementById("mdp"),
+    //     document.getElementById("couleur_h6").textContent
+    //   )
+    // );
+    // commande_ouvrant_line.push(
+    //   codeProtecteur(
+    //     document.getElementById("pro"),
+    //     document.getElementById("lo1")
+    //   )
+    // );
+
+    // commande_ouvrant_line.push(
+    //   codeVitrage(
+    //     document.getElementById("vi"),
+    //     document.getElementById("couleur_h6").textContent,
+    //     document.getElementById("lo1")
+    //   )
+    // );
+    // commande_ouvrant_line.push(
+    //   codeGrille(
+    //     document.getElementById("ga"),
+    //     document.getElementById("couleur_h6").textContent
+    //   )
+    // );
+
+    // commande_ouvrant_line.push(
+    //   codeEmbochure(
+    //     document.getElementById("ndv"),
+    //     "",
+    //     document.getElementById("lp"),
+    //     document.getElementById("ho"),
+    //     document.getElementById("lo1"),
+    //     document.getElementById("couleur_h6").textContent
+    //   )
+    // );
+    // commande_ouvrant_line.push(
+    //   codeSerure(
+    //     document.getElementById("tdp"),
+    //     document.getElementById("ndv"),
+    //     document.getElementById("ms_h6").textContent,
+    //     document.getElementById("so_h6").textContent
+    //   )
+    // );
+    // commande_ouvrant.push(commande_ouvrant_line);
+
+    cartCxt.addItem({
+      id: uuidv4(),
+      lp: checkIfNull(document.getElementById("lp"), false),
+      ho: checkIfNull(document.getElementById("ho"), false),
+      lo1: checkIfNull(document.getElementById("lo1"), false),
+      ms: checkIfNull(document.getElementById("ms"), false),
+      se: checkIfNull(document.getElementById("se"), false),
+      pro: checkIfNull(document.getElementById("pro"), false),
+      so: checkIfNull(document.getElementById("so"), false),
+      vi: checkIfNull(document.getElementById("vi"), false),
+      ga: checkIfNull(document.getElementById("ga"), false),
+      qu: checkIfNull(document.getElementById("qu"), false),
+      codeModel: codeModel(
         document.getElementById("mdp"),
         document.getElementById("couleur_h6").textContent
-      )
-    );
-    console.log(
-      codeProtecteur(
+      ),
+      codeProtecteur: codeProtecteur(
         document.getElementById("pro"),
         document.getElementById("lo1")
-      )
-    );
-    console.log(
-      codeVitrage(
+      ),
+      codeVitrage: codeVitrage(
         document.getElementById("vi"),
         document.getElementById("couleur_h6").textContent,
         document.getElementById("lo1")
-      )
-    );
-    console.log(
-      codeGrille(
+      ),
+      codeGrille: codeGrille(
         document.getElementById("ga"),
         document.getElementById("couleur_h6").textContent
-      )
-    );
-    console.log(
-      codeEmbochure(
+      ),
+      codeEmbochure: codeEmbochure(
         document.getElementById("ndv"),
         "",
         document.getElementById("lp"),
         document.getElementById("ho"),
         document.getElementById("lo1"),
         document.getElementById("couleur_h6").textContent
-      )
-    );
-    console.log(
-      codeSerure(
+      ),
+      codeSerure: codeSerure(
         document.getElementById("tdp"),
         document.getElementById("ndv"),
         document.getElementById("ms_h6").textContent,
         document.getElementById("so_h6").textContent
-      )
-    );
-
-    console.log(commande_ouvrant);
+      ),
+      // commande: commande_ouvrant_line,
+    });
+    // console.log(commande_ouvrant);
+    // commande_ouvrant_line = [];
   }
 
   return (

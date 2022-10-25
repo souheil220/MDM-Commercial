@@ -1,22 +1,30 @@
 import "./CartItem.css";
 
 const CartItem = (props) => {
-  const price = `$${(10.922).toFixed(2)}`;
-
+  console.log(props.onRemove);
   return (
-    <li className={"cart-item"}>
-      <div>
-        <h2>{props.name}</h2>
-        <div className={"summary"}>
-          <span className={"price"}>{price}</span>
-          <span className={"amount"}>x {props.amount}</span>
-        </div>
-      </div>
-      <div className={"actions"}>
+    <tr>
+      <td>{props.lp}</td>
+      <td>{props.ho}</td>
+      <td>{props.lo1}</td>
+      <td>{props.ms}</td>
+      <td>{props.se}</td>
+      <td>{props.pro}</td>
+      <td>{props.so}</td>
+      <td>{props.vi}</td>
+      <td>{props.ga}</td>
+      <td>{props.qu}</td>
+      <td>test</td>
+      <td>{props.codeModel}</td>
+      <td>{props.codeProtecteur}</td>
+      <td>{props.codeVitrage}</td>
+      <td>{props.codeGrille}</td>
+      {/* <td>{props.codeEmbochure}</td>
+      <td>{props.codeSerure}</td> */}
+      <div style={{ height: "100%" }} className="actions">
         <button onClick={props.onRemove}>−</button>
-        <button onClick={props.onAdd}>+</button>
       </div>
-    </li>
+    </tr>
   );
 };
 

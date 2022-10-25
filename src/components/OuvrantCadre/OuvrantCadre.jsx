@@ -691,7 +691,7 @@ export default function OuvrantCadre(props) {
     }
   };
 
-  const funcForCJH = (e, el) => {
+  const funcForCJH = (e, el, em_h6) => {
     if (
       props.inputB5Value === 1 &&
       ((el !== "Spécial" && el !== "") || el === "Spécial") //&& F20 != ""
@@ -712,14 +712,16 @@ export default function OuvrantCadre(props) {
           mdf.options[mdf.selectedIndex].text !== "Aluminium") ||
         ndv.options[ndv.selectedIndex].text === "" ||
         (parseInt(ndv.options[ndv.selectedIndex].text) === 2 &&
-          (lp === null || lp.options[lp.selectedIndex].text === "")) ||
+          lp !== null &&
+          lp.options[lp.selectedIndex].text === "") ||
         ho.options[ho.selectedIndex].text === "" ||
         lo1.options[lo1.selectedIndex].text === "" ||
         ms.options[ms.selectedIndex].text === "" ||
         so.options[so.selectedIndex].text === "" ||
         el === "" ||
-        parseInt(document.getElementById("em_h6").textContent) === 7 ||
-        cu.options[cu.selectedIndex].text === ""
+        parseInt(em_h6) === 7 ||
+        (document.getElementById("cu_value") !== null &&
+          document.getElementById("cu_value").textContent === "")
       ) {
         props.onChangeCJH(false);
       } else {
@@ -1015,12 +1017,14 @@ export default function OuvrantCadre(props) {
     }
 
     if (props.id === "em") {
-      funcForCU(e, el);
-      funcForCJH(e, el);
       if (el !== "Spéciale") {
         var em = document.getElementById("em");
+        console.log(props.options[em.selectedIndex].code);
         setShowText(props.options[em.selectedIndex].code);
       }
+      console.log(document.getElementById("em_h6").textContent);
+      funcForCU(e, el);
+      funcForCJH(e, el, props.options[em.selectedIndex].code);
     }
 
     if (props.id === "cjh") {
@@ -1039,8 +1043,6 @@ export default function OuvrantCadre(props) {
       var cdcj = document.getElementById("cdcj");
       setShowText(props.options[cdcj.selectedIndex].code);
     }
-
-    console.log(props.inputB5Value);
   };
 
   return (
@@ -1131,7 +1133,7 @@ export default function OuvrantCadre(props) {
                 </div>
               </>
             ) : (
-              <h6>{showText}</h6>
+              <h6 id={props.id + "_h6"}>{showText}</h6>
             )
           ) : (
             <>
