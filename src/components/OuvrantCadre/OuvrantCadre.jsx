@@ -670,14 +670,12 @@ export default function OuvrantCadre(props) {
     }
   };
 
-  const funcForCU = (e, el) => {
+  const funcForCU = (el) => {
+    console.log("el " + el);
     if (el === "") {
       props.onChange(false);
     } else {
-      if (el === "Spéciale") {
-        setShowEpesseur(true);
-        props.onChangeCUValue("0");
-      } else {
+      if (el !== "Spéciale") {
         setShowEpesseur(false);
         if (el === "130-->165") {
           props.onChangeCUValue("100");
@@ -691,10 +689,11 @@ export default function OuvrantCadre(props) {
     }
   };
 
-  const funcForCJH = (e, el, em_h6) => {
+  const funcForCJH = (el, em_h6, F20) => {
     if (
       props.inputB5Value === 1 &&
-      ((el !== "Spécial" && el !== "") || el === "Spécial") //&& F20 != ""
+      ((el !== "Spécial" && el !== "") || el === "Spécial") &&
+      F20 !== ""
     ) {
       props.onChangeCJH(true);
     } else {
@@ -811,9 +810,52 @@ export default function OuvrantCadre(props) {
     funcCalculateLO2(lp.options[lp.selectedIndex].text, event.target.value, 0);
   };
 
-  const handleEpaisseurChange = (event) => {
-    setEpaisseur(event.target.value);
+  const blurFunction = (event) => {
+    if (
+      172 < parseInt(event.target.value) &&
+      parseInt(event.target.value) &&
+      parseInt(event.target.value) &&
+      parseInt(event.target.value) <= 201
+    ) {
+      props.onChangeCUValue("100");
+    } else if (
+      202 < parseInt(event.target.value) &&
+      parseInt(event.target.value) <= 231
+    ) {
+      props.onChangeCUValue("130");
+    } else if (
+      244 < parseInt(event.target.value) &&
+      parseInt(event.target.value) <= 273
+    ) {
+      props.onChangeCUValue("100");
+    } else if (
+      274 < parseInt(event.target.value) &&
+      parseInt(event.target.value) <= 303
+    ) {
+      props.onChangeCUValue("130");
+    } else if (
+      232 < parseInt(event.target.value) &&
+      parseInt(event.target.value) <= 261
+    ) {
+      props.onChangeCUValue("160");
+    } else if (
+      304 < parseInt(event.target.value) &&
+      parseInt(event.target.value) <= 333
+    ) {
+      props.onChangeCUValue("160");
+    } else {
+      props.onChangeCUValue("0");
+    }
+    em = document.getElementById("em");
+    props.onChange(true);
+    funcForCJH(
+      em.options[em.selectedIndex].text,
+      props.options[em.selectedIndex].code,
+      event.target.value
+    );
   };
+
+  const handleEpaisseurChange = (event) => {};
 
   const handleText = (e) => {
     const el = document.getElementById(props.id).options[
@@ -1021,10 +1063,13 @@ export default function OuvrantCadre(props) {
         var em = document.getElementById("em");
         console.log(props.options[em.selectedIndex].code);
         setShowText(props.options[em.selectedIndex].code);
+        setShowEpesseur(false);
+        // console.log(document.getElementById("em_h6").textContent);
+        funcForCU(el);
+        funcForCJH(el, props.options[em.selectedIndex].code, "");
+      } else {
+        setShowEpesseur(true);
       }
-      console.log(document.getElementById("em_h6").textContent);
-      funcForCU(e, el);
-      funcForCJH(e, el, props.options[em.selectedIndex].code);
     }
 
     if (props.id === "cjh") {
@@ -1126,7 +1171,8 @@ export default function OuvrantCadre(props) {
                       id={props.id + "_special_value"}
                       type="number"
                       value={epaisseur}
-                      onChange={handleEpaisseurChange}
+                      onChange={(e) => setEpaisseur(e.target.value)}
+                      onBlur={blurFunction}
                       max="90"
                     />
                   </InputGroup>

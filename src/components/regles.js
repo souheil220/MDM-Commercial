@@ -512,3 +512,61 @@
         }
     }
 }
+
+
+// F21
+{
+    if ("'Ouvrant et Cadre'!F20" === "") {
+        return 0
+    } else {
+        if ("'Ouvrant et Cadre'!F20" > "'Detail Ouvrant et Cadre'!C75" &&
+            "'Ouvrant et Cadre'!F20" <= "'Detail Ouvrant et Cadre'!D75" &&
+            "'Detail Ouvrant et Cadre'!A75" === 100) {
+            return "'Detail Ouvrant et Cadre'!B75"
+        } else {
+            if (("'Ouvrant et Cadre'!F20" > "'Detail Ouvrant et Cadre'!C76" &&
+                    "'Ouvrant et Cadre'!F20" <= "'Detail Ouvrant et Cadre'!D76" &&
+                    "'Detail Ouvrant et Cadre'!A76" === 130)) {
+
+                return "'Detail Ouvrant et Cadre'!B76";
+            } else {
+
+                if (ET("'Ouvrant et Cadre'!F20" > "'Detail Ouvrant et Cadre'!C77" &&
+                        "'Ouvrant et Cadre'!F20" <= "'Detail Ouvrant et Cadre'!D77" &&
+                        "'Detail Ouvrant et Cadre'!A77" === 100)) {
+
+                    return "'Detail Ouvrant et Cadre'!B77";
+                } else {
+
+                    if (("'Ouvrant et Cadre'!F20" > "'Detail Ouvrant et Cadre'!C78" &&
+                            "'Ouvrant et Cadre'!F20" <= "'Detail Ouvrant et Cadre'!D78" &&
+                            "'Detail Ouvrant et Cadre'!A78" === 130)) {
+
+                        return "'Detail Ouvrant et Cadre'!B78";
+                    } else {
+
+                        if (("'Ouvrant et Cadre'!F20" > C79 &&
+                                "'Ouvrant et Cadre'!F20" <= D79 &&
+                                A79 === 160)) {
+
+                            return B79;
+                        } else {
+
+                            if (("'Ouvrant et Cadre'!F20" > C80 &&
+                                    "'Ouvrant et Cadre'!F20" <= D80 &&
+                                    A80 === 160)) {
+
+                                return B80;
+                            } else {
+
+                                return "faut"
+                            }
+                        }
+
+                    }
+                }
+            }
+        }
+
+    }
+}

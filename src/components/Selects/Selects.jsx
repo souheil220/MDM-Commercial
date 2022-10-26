@@ -253,33 +253,38 @@ export default function Selects() {
 
   function codeEmbochure(
     ndv_select,
-    F21,
+    em_select,
+    em_special_value,
     lp_select,
     ho_select,
     lo1_select,
     couleur_h6
   ) {
     if (parseInt(ndv_select.options[ndv_select.selectedIndex].text) === 1) {
-      if (F21 === "") {
-        return "";
+      if (em_select.options[em_select.selectedIndex].text === "Special") {
+        if (em_special_value < 90) {
+          return "";
+        }
       } else {
         return (
           "EM" +
           ho_select.options[ho_select.selectedIndex].text +
           lo1_select.options[lo1_select.selectedIndex].text +
-          F21 +
+          "faut" +
           couleur_h6
         );
       }
     } else {
-      if (F21 === "") {
-        return "";
+      if (ndv_select.options[ndv_select.selectedIndex].text === "Special") {
+        if (em_special_value < 90) {
+          return "";
+        }
       } else {
         return (
           "EM" +
           ho_select.options[ho_select.selectedIndex].text +
           lp_select.options[lp_select.selectedIndex].text +
-          F21 +
+          "faut" +
           couleur_h6
         );
       }
@@ -412,7 +417,8 @@ export default function Selects() {
       ),
       codeEmbochure: codeEmbochure(
         document.getElementById("ndv"),
-        "",
+        document.getElementById("em"),
+        document.getElementById("em_special_value").value,
         document.getElementById("lp"),
         document.getElementById("ho"),
         document.getElementById("lo1"),
