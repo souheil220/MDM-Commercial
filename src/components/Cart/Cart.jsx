@@ -11,7 +11,6 @@ export default function Cart(props) {
   const hasItems = true;
 
   const cartItemRemoveHandler = (id) => {
-    console.log("id" + id);
     cartCxt.removeItem(id);
   };
   const cartItemAddHandler = (item) => {
@@ -22,6 +21,13 @@ export default function Cart(props) {
     <Table striped bordered hover>
       <thead>
         <tr>
+          <th>Code</th>
+          <th>Quantité</th>
+          <th>Type de Porte</th>
+          <th>Modele de Porte</th>
+          <th>Matière De Finition</th>
+          <th>Couleur</th>
+          <th>Nombre de Ventaux</th>
           <th>Largeur Precadre (Intérieur)</th>
           <th>Hauteur Ouvrant (mm)</th>
           <th>Largueur Ouvrant (mm)</th>
@@ -40,29 +46,73 @@ export default function Cart(props) {
         </tr>
       </thead>
       <tbody>
-        {cartCxt.items.map((item) => (
-          <CartItem
-            key={item.id}
-            lp={item.lp}
-            ho={item.ho}
-            lo1={item.lo1}
-            ms={item.ms}
-            se={item.se}
-            pro={item.pro}
-            so={item.so}
-            vi={item.vi}
-            ga={item.ga}
-            qu={item.qu}
-            codeModel={item.codeModel}
-            codeProtecteur={item.codeProtecteur}
-            codeVitrage={item.codeVitrage}
-            codeGrille={item.codeGrille}
-            // codeEmbochure={item.codeEmbochure}
-            // codeSerure={item.codeSerure}
-            onRemove={cartItemRemoveHandler.bind(null, item.id)}
-            onAdd={cartItemAddHandler.bind(null, item)}
-          />
-        ))}
+        {props.cartTitle === "Commande Ouvrant" ? (
+          cartCxt.items.map((item) => (
+            <CartItem
+              key={item.id}
+              code={item.code}
+              quantite={item.quantite}
+              tdp={item.tdp}
+              mdp={item.mdp}
+              mdf={item.mdf}
+              couleur={item.couleur}
+              ndv={item.ndv}
+              lp={item.lp}
+              ho={item.ho}
+              lo1={item.lo1}
+              ms={item.ms}
+              se={item.se}
+              pro={item.pro}
+              so={item.so}
+              vi={item.vi}
+              ga={item.ga}
+              qu={item.qu}
+              client={item.client}
+              codeModel={item.codeModel}
+              codeProtecteur={item.codeProtecteur}
+              codeVitrage={item.codeVitrage}
+              codeGrille={item.codeGrille}
+              // codeEmbochure={item.codeEmbochure}
+              // codeSerure={item.codeSerure}
+              onRemove={cartItemRemoveHandler.bind(null, item.id)}
+              onAdd={cartItemAddHandler.bind(null, item)}
+            />
+          ))
+        ) : props.cartTitle === "Commande Cadre" ? (
+          cartCxt.itemsCadre.map((item) => (
+            <CartItem
+              key={item.id}
+              code={item.code}
+              quantite={item.quantite}
+              tdp={item.tdp}
+              mdp={item.mdp}
+              mdf={item.mdf}
+              couleur={item.couleur}
+              ndv={item.ndv}
+              lp={item.lp}
+              ho={item.ho}
+              lo1={item.lo1}
+              ms={item.ms}
+              se={item.se}
+              pro={item.pro}
+              so={item.so}
+              vi={item.vi}
+              ga={item.ga}
+              qu={item.qu}
+              client={item.client}
+              codeModel={item.codeModel}
+              codeProtecteur={item.codeProtecteur}
+              codeVitrage={item.codeVitrage}
+              codeGrille={item.codeGrille}
+              // codeEmbochure={item.codeEmbochure}
+              // codeSerure={item.codeSerure}
+              onRemove={cartItemRemoveHandler.bind(null, item.id)}
+              onAdd={cartItemAddHandler.bind(null, item)}
+            />
+          ))
+        ) : (
+          <>test</>
+        )}
       </tbody>
     </Table>
   );

@@ -570,3 +570,29 @@
 
     }
 }
+
+// CODE
+{
+    var code=""
+    if(E3===""){
+        code = code + E4+ D10 + D11
+        if (F3==="C"){
+            code = code + "2"
+        }else{
+            code = code + E14
+        }
+        code = code + E15 + E16 + E17 + E18
+        if(F3==="C"){
+            code = code +"3"
+        }else{
+            code =code + E19
+        }
+        code = code + E13 + E7
+        return code
+    }
+    else{
+        code = ""
+    }
+
+    return code
+}

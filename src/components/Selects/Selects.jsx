@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 
 import "bootstrap/dist/css/bootstrap.min.css";
 import Container from "react-bootstrap/Container";
@@ -6,6 +6,8 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import CartContext from "../../context/cart-context";
 import Button from "react-bootstrap/Button";
+import FloatingLabel from "react-bootstrap/FloatingLabel";
+import Form from "react-bootstrap/Form";
 import "./Selects.css";
 import { v4 as uuidv4 } from "uuid";
 import Card from "../UI/Card";
@@ -14,33 +16,35 @@ import OuvrantCadre from "../OuvrantCadre/OuvrantCadre";
 
 export default function Selects() {
   const cartCxt = useContext(CartContext);
-  const [inputB5, setInputB5] = React.useState(1);
+  const [inputB5, setInputB5] = useState(1);
 
-  const [tdp, settdp] = React.useState(false);
-  const [mdp, setmdp] = React.useState(false);
-  const [mdf, setmdf] = React.useState(false);
-  const [cou, setcou] = React.useState(false);
-  const [ndv, setndv] = React.useState(false);
-  const [lp, setlp] = React.useState(false);
-  const [ho, setho] = React.useState(false);
-  const [lo1, setlo1] = React.useState(false);
-  const [lo2, setlo2] = React.useState(false);
-  const [lo2Value, setlo2Value] = React.useState(false);
-  const [cuValue, setcuValue] = React.useState(false);
-  const [ms, setlms] = React.useState(false);
-  const [se, setlse] = React.useState(false);
-  const [pro, setlpro] = React.useState(false);
-  const [so, setso] = React.useState(false);
-  const [vi, setvi] = React.useState(false);
-  const [ga, setga] = React.useState(false);
-  const [qu, setqu] = React.useState(false);
-  const [em, setem] = React.useState(false);
-  const [cu, setcu] = React.useState(false);
-  const [cjh, setcjh] = React.useState(false);
-  const [cjl, setcjl] = React.useState(false);
-  const [cdcj, setcdcj] = React.useState(false);
+  const [tdp, settdp] = useState(false);
+  const [mdp, setmdp] = useState(false);
+  const [mdf, setmdf] = useState(false);
+  const [cou, setcou] = useState(false);
+  const [ndv, setndv] = useState(false);
+  const [lp, setlp] = useState(false);
+  const [ho, setho] = useState(false);
+  const [lo1, setlo1] = useState(false);
+  const [lo2, setlo2] = useState(false);
+  const [lo2Value, setlo2Value] = useState(false);
+  const [cuValue, setcuValue] = useState(false);
+  const [ms, setlms] = useState(false);
+  const [se, setlse] = useState(false);
+  const [pro, setlpro] = useState(false);
+  const [so, setso] = useState(false);
+  const [vi, setvi] = useState(false);
+  const [ga, setga] = useState(false);
+  const [qu, setqu] = useState(false);
+  const [em, setem] = useState(false);
+  const [cu, setcu] = useState(false);
+  const [cjh, setcjh] = useState(false);
+  const [cjl, setcjl] = useState(false);
+  const [cdcj, setcdcj] = useState(false);
 
-  const [firstName, setFirstName] = React.useState("");
+  const [firstName, setFirstName] = useState("");
+  const [clientName, setClientName] = useState("");
+  const [quantite, setQuantite] = useState("");
 
   var commande_ouvrant = [];
   var commande_ouvrant_line = [];
@@ -153,8 +157,10 @@ export default function Selects() {
   }
 
   function codeModel(mdp_select, couleur_h6) {
-    if (mdp_select.options[mdp_select.selectedIndex].text === "Star Massif") {
-      // return commande_ouvrant.push("");
+    if (
+      mdp_select === null ||
+      mdp_select.options[mdp_select.selectedIndex].text === "Star Massif"
+    ) {
       return "";
     } else {
       return (
@@ -162,12 +168,6 @@ export default function Selects() {
         mdp_select.options[mdp_select.selectedIndex].text +
         couleur_h6.options[couleur_h6.selectedIndex].text
       );
-
-      // return commande_ouvrant.push(
-      //   "F" +
-      //     mdp_select.options[mdp_select.selectedIndex].text +
-      //     couleur_h6.options[couleur_h6.selectedIndex].text
-      // );
     }
   }
 
@@ -232,6 +232,7 @@ export default function Selects() {
 
   function codeGrille(ga_select, couleur_h6) {
     if (
+      ga_select === null ||
       ga_select.options[ga_select.selectedIndex].text === "Sans Mécanisation"
     ) {
       return "";
@@ -261,7 +262,10 @@ export default function Selects() {
     couleur_h6
   ) {
     if (parseInt(ndv_select.options[ndv_select.selectedIndex].text) === 1) {
-      if (em_select.options[em_select.selectedIndex].text === "Special") {
+      if (
+        em_select !== null &&
+        em_select.options[em_select.selectedIndex].text === "Special"
+      ) {
         if (em_special_value < 90) {
           return "";
         }
@@ -290,6 +294,7 @@ export default function Selects() {
       }
     }
   }
+
   function codeSerure(tdp_select, ndv_select, ms_h6, so_h6) {
     if (
       tdp_select.options[tdp_select.selectedIndex].text ===
@@ -313,6 +318,25 @@ export default function Selects() {
         return "S" + ms_h6 + "M" + so_h6;
       }
     }
+  }
+
+  function generateCode() {
+    var code = "";
+
+    code =
+      code +
+      document.getElementById("tdp_h6").textContent +
+      document.getElementById("ho").options[
+        document.getElementById("ho").selectedIndex
+      ].text +
+      document.getElementById("lo1").options[
+        document.getElementById("lo1").selectedIndex
+      ].text +
+      document.getElementById("so_h6").textContent +
+      document.getElementById("ms_h6").textContent +
+      document.getElementById("couleur_h6").textContent;
+
+    return code;
   }
 
   function getAllData() {
@@ -386,8 +410,15 @@ export default function Selects() {
     // );
     // commande_ouvrant.push(commande_ouvrant_line);
 
-    cartCxt.addItem({
+    var data = {
       id: uuidv4(),
+      code: generateCode(),
+      quantite: document.getElementById("quantite").value,
+      tdp: checkIfNull(document.getElementById("tdp"), false),
+      mdp: checkIfNull(document.getElementById("mdp"), false),
+      mdf: checkIfNull(document.getElementById("mdf"), false),
+      couleur: checkIfNull(document.getElementById("couleur"), false),
+      ndv: checkIfNull(document.getElementById("ndv"), false),
       lp: checkIfNull(document.getElementById("lp"), false),
       ho: checkIfNull(document.getElementById("ho"), false),
       lo1: checkIfNull(document.getElementById("lo1"), false),
@@ -398,6 +429,7 @@ export default function Selects() {
       vi: checkIfNull(document.getElementById("vi"), false),
       ga: checkIfNull(document.getElementById("ga"), false),
       qu: checkIfNull(document.getElementById("qu"), false),
+      client: document.getElementById("clientName").value,
       codeModel: codeModel(
         document.getElementById("mdp"),
         document.getElementById("couleur_h6").textContent
@@ -418,7 +450,9 @@ export default function Selects() {
       codeEmbochure: codeEmbochure(
         document.getElementById("ndv"),
         document.getElementById("em"),
-        document.getElementById("em_special_value").value,
+        document.getElementById("em_special_value") !== null
+          ? document.getElementById("em_special_value").value
+          : "",
         document.getElementById("lp"),
         document.getElementById("ho"),
         document.getElementById("lo1"),
@@ -431,7 +465,14 @@ export default function Selects() {
         document.getElementById("so_h6").textContent
       ),
       // commande: commande_ouvrant_line,
-    });
+    };
+    if (document.getElementById("commande").value === "Ouvrant Seul") {
+      cartCxt.addItem({ ...data });
+    } else {
+      console.log("elseeeeeeeeeeeeeeeeeeeeee");
+      cartCxt.addItemCadre({ ...data });
+    }
+
     // console.log(commande_ouvrant);
     // commande_ouvrant_line = [];
   }
@@ -940,17 +981,34 @@ export default function Selects() {
           />
         )}
 
-        <Container>
+        <Container style={{ "margin-bottom": "1%" }}>
+          <Row>
+            <Col>
+              <h6>Quantité</h6>
+            </Col>
+            <Col xs={6}>
+              <Form.Control
+                value={quantite}
+                onChange={(e) => setQuantite(e.target.value)}
+                id="quantite"
+              />
+            </Col>
+            <Col xs={4}></Col>
+          </Row>
+        </Container>
+        <Container style={{ "margin-bottom": "1%" }}>
           <Row>
             <Col>
               <h6>Client</h6>
             </Col>
             <Col xs={6}>
-              <h6>Test</h6>
+              <Form.Control
+                value={clientName}
+                onChange={(e) => setClientName(e.target.value)}
+                id="clientName"
+              />
             </Col>
-            <Col>
-              <h6>0</h6>
-            </Col>
+            <Col xs={4}></Col>
           </Row>
         </Container>
         <Button variant="primary" onClick={getAllData}>

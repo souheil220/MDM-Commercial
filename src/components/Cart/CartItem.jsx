@@ -1,9 +1,15 @@
 import "./CartItem.css";
 
 const CartItem = (props) => {
-  console.log(props.onRemove);
   return (
     <tr>
+      <td>{props.code}</td>
+      <td>{props.quantite}</td>
+      <td>{props.tdp}</td>
+      <td>{props.mdp}</td>
+      <td>{props.mdf}</td>
+      <td>{props.couleur}</td>
+      <td>{props.ndv}</td>
       <td>{props.lp}</td>
       <td>{props.ho}</td>
       <td>{props.lo1}</td>
@@ -14,7 +20,7 @@ const CartItem = (props) => {
       <td>{props.vi}</td>
       <td>{props.ga}</td>
       <td>{props.qu}</td>
-      <td>test</td>
+      <td>{props.client}</td>
       <td>{props.codeModel}</td>
       <td>{props.codeProtecteur}</td>
       <td>{props.codeVitrage}</td>
