@@ -17,6 +17,7 @@ import OuvrantCadre from "../OuvrantCadre/OuvrantCadre";
 export default function Selects() {
   const cartCxt = useContext(CartContext);
   const [inputB5, setInputB5] = useState(1);
+  const [inputB14, setInputB14] = useState(0);
 
   const [tdp, settdp] = useState(false);
   const [mdp, setmdp] = useState(false);
@@ -45,9 +46,6 @@ export default function Selects() {
   const [firstName, setFirstName] = useState("");
   const [clientName, setClientName] = useState("");
   const [quantite, setQuantite] = useState("");
-
-  var commande_ouvrant = [];
-  var commande_ouvrant_line = [];
 
   function handleCOMMANDEChange(newValue) {
     settdp(newValue);
@@ -142,6 +140,9 @@ export default function Selects() {
   }
   function handleInputB5(input) {
     setInputB5(input);
+  }
+  function handleInputB14(input) {
+    setInputB14(input);
   }
 
   function checkIfNull(data, text) {
@@ -489,10 +490,11 @@ export default function Selects() {
             { text: "Cadre Seul", value: "Cadre Seul", code: "" },
             { text: "Ouvrant et Cadre", value: "Ouvrant et Cadre", code: "" },
           ]}
-          onChange={handleCOMMANDEChange}
-          onChangeCS={handleTDPChange}
-          onChangeEm={handleEMChange}
-          funcInputB5={handleInputB5}
+          onChangeC={handleCOMMANDEChange}
+          onChangeTDP={handleTDPChange}
+          onChangeEM={handleEMChange}
+          onChangeGA={handleGAChange}
+          onChangeB5Value={handleInputB5}
           inputB5Value={inputB5}
         />
 
@@ -529,10 +531,10 @@ export default function Selects() {
               },
               { text: "Technique", value: "Technique", code: "PTE" },
             ]}
-            onChange={handleTDPChange}
-            onChangeMDF={handleMDPChange}
+            onChangeTDP={handleTDPChange}
+            onChangeMDP={handleMDPChange}
             onChangeGA={handleGAChange}
-            funcInputB5={handleInputB5}
+            onChangeB5Value={handleInputB5}
             inputB5Value={inputB5}
           />
         )}
@@ -551,7 +553,7 @@ export default function Selects() {
               { text: "EL1", value: "EL1", code: "EL1" },
               { text: "EL7", value: "EL7", code: "EL7" },
             ]}
-            onChange={handleMDPChange}
+            onChangeMDP={handleMDPChange}
             inputB5Value={inputB5}
           />
         )}
@@ -571,8 +573,8 @@ export default function Selects() {
                 code: "",
               },
             ]}
-            onChange={handleMDFChange}
-            onChangeNDV={handleCOULEURChange}
+            onChangeMDF={handleMDFChange}
+            onChangeCOULEUR={handleCOULEURChange}
             inputB5Value={inputB5}
           />
         )}
@@ -592,7 +594,7 @@ export default function Selects() {
               { text: "Finza Stella", value: "Finza Stella", code: "FST" },
               { text: "Finza Azabache", value: "Finza Tostado", code: "FAZ" },
             ]}
-            onChange={handleCOULEURChange}
+            onChangeCOULEUR={handleCOULEURChange}
             inputB5Value={inputB5}
           />
         )}
@@ -606,9 +608,9 @@ export default function Selects() {
               { text: "1", value: "1", code: "1" },
               { text: "2", value: "2", code: "2" },
             ]}
-            onChange={handleNDVChange}
-            onChangeCS={handleLPChange}
-            onChangeLO2={handleLO1Change}
+            onChangeNDV={handleNDVChange}
+            onChangeLP={handleLPChange}
+            onChangeLO1={handleLO1Change}
             nameSetter={nameSetter}
             inputB5Value={inputB5}
           />
@@ -627,7 +629,7 @@ export default function Selects() {
               { text: "1659", value: "1659", code: "1659" },
               { text: "1859", value: "1859", code: "1859" },
             ]}
-            onChange={handleLPChange}
+            onChangeLP={handleLPChange}
             onChangeLO2Value={handleLO2Value}
           />
         )}
@@ -642,7 +644,7 @@ export default function Selects() {
               { text: "2090", value: "2090", code: "2090" },
               { text: "Spéciale", value: "Spéciale", code: "Hauteur" },
             ]}
-            onChange={handleHOChange}
+            onChangeHO={handleHOChange}
             nameSetter={nameSetter}
             inputB5Value={inputB5}
           />
@@ -661,7 +663,7 @@ export default function Selects() {
               { text: "1023", value: "1023", code: "1023" },
               { text: "Spéciale", value: "Spéciale", code: "Largeur" },
             ]}
-            onChange={handleLO1Change}
+            onChangeLO1={handleLO1Change}
             onChangeMS={handleMSChange}
             onChangePro={handleProChange}
             onChangeLO2Value={handleLO2Value}
@@ -754,8 +756,9 @@ export default function Selects() {
               },
               { text: "petite clé cf", value: "petite clé cf", code: "PC" },
             ]}
-            onChange={handleSEChange}
+            onChangeSE={handleSEChange}
             onChangeSO={handleSOChange}
+            onChangeB14Value={handleInputB14}
           />
         )}
 
@@ -769,6 +772,7 @@ export default function Selects() {
               { text: "Non", value: "Non", code: "Non" },
             ]}
             onChangeSO={handleSOChange}
+            inputB14={inputB14}
           />
         )}
 
@@ -800,7 +804,7 @@ export default function Selects() {
               { text: "Gauche", value: "Gauche", code: "G" },
               { text: "Sans Sens", value: "Sans Sens", code: "D" },
             ]}
-            onChange={handleVIChange}
+            onChangeVI={handleVIChange}
             onChangeGA={handleGAChange}
             onChangeQu={handleQUChange}
           />
@@ -836,6 +840,7 @@ export default function Selects() {
                 code: "Vitrage Côté",
               },
             ]}
+            onChangeGA={handleGAChange}
           />
         )}
 
@@ -861,7 +866,7 @@ export default function Selects() {
                 code: "Sans Mécanisation",
               },
             ]}
-            onChange={handleQUChange}
+            onChangeQU={handleQUChange}
             inputB5Value={inputB5}
           />
         )}
@@ -883,7 +888,7 @@ export default function Selects() {
                 code: "Sans Quincaillerie",
               },
             ]}
-            onChange={handleEMChange}
+            onChangeEM={handleEMChange}
             inputB5Value={inputB5}
           />
         )}
@@ -910,7 +915,7 @@ export default function Selects() {
                 code: "Epaisseur",
               },
             ]}
-            onChange={handleCUChange}
+            onChangeCU={handleCUChange}
             onChangeCJH={handleCJHChange}
             onChangeCUValue={handleCUValue}
             inputB5Value={inputB5}
@@ -945,7 +950,7 @@ export default function Selects() {
                 code: "2",
               },
             ]}
-            onChange={handleCJLChange}
+            onChangeCJL={handleCJLChange}
             inputB5Value={inputB5}
           />
         )}
@@ -962,7 +967,7 @@ export default function Selects() {
                 code: "2",
               },
             ]}
-            onChange={handleCDCJChange}
+            onChangeCDCJ={handleCDCJChange}
             inputB5Value={inputB5}
           />
         )}

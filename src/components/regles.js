@@ -224,7 +224,7 @@
     if (B14 == 1) {
         return "Sens D'Ouverture"
     } else {
-        if (ET(D3 == "Cadre Seul" && D14 != "")) {
+        if ((D3 == "Cadre Seul" && D14 != "")) {
             return "Sens D'Ouverture"
         } else {
             if ((D3 == "" || D4 == "" ||
@@ -267,7 +267,7 @@
 
 // Grille D'Airation
 {
-    if (ET(C17 == "" && E5 == 7)) {
+    if ((C17 == "" && E5 == 7)) {
         return "Grille D'Airation"
     } else {
         if ((D3 == "" || D3 == "Cadre Seul" || D4 == "" ||
@@ -573,24 +573,23 @@
 
 // CODE
 {
-    var code=""
-    if(E3===""){
-        code = code + E4+ D10 + D11
-        if (F3==="C"){
+    var code = ""
+    if (E3 === "") {
+        code = code + E4 + D10 + D11
+        if (F3 === "C") {
             code = code + "2"
-        }else{
+        } else {
             code = code + E14
         }
         code = code + E15 + E16 + E17 + E18
-        if(F3==="C"){
-            code = code +"3"
-        }else{
-            code =code + E19
+        if (F3 === "C") {
+            code = code + "3"
+        } else {
+            code = code + E19
         }
         code = code + E13 + E7
         return code
-    }
-    else{
+    } else {
         code = ""
     }
 
