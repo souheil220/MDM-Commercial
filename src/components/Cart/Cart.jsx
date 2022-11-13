@@ -1,14 +1,20 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import Modal from "../UI/Modal";
 import CartContext from "../../context/cart-context";
 import CartItem from "./CartItem";
 import Table from "react-bootstrap/Table";
 
 import "./Cart.css";
+import { useEffect } from "react";
 
 export default function Cart(props) {
+  const [orderValue, setOrderValue] = useState(false);
+  const [show, setShow] = useState(false);
+  const [error, setError] = useState({});
   const cartCxt = useContext(CartContext);
   const hasItems = true;
+
+  console.log(orderValue);
 
   const cartItemRemoveHandler = (id) => {
     cartCxt.removeItem(id);
@@ -16,6 +22,40 @@ export default function Cart(props) {
   const cartItemAddHandler = (item) => {
     cartCxt.addItem({ ...item, amount: 1 });
   };
+
+  function handleShow() {
+    setShow(false);
+  }
+
+  useEffect(() => {
+    setError({ title: "", message: "" });
+    console.log(orderValue);
+    if (orderValue) {
+      const requestOptions = {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(cartCxt.items),
+      };
+
+      fetch("http://127.0.0.1:8000/commande-ouvrant/", requestOptions)
+        .then((response) => response.json())
+        .then((data) => {
+          if (data.error !== undefined) {
+            setShow(true);
+            setError(data.error);
+            console.log(data.error);
+            setOrderValue(true);
+          } else if (data.success !== undefined) {
+            console.log(data.success);
+            props.cartTitle === "Commande Ouvrant"
+              ? (cartCxt.items = [])
+              : (cartCxt.itemsCadre = []);
+            setOrderValue(true);
+            props.onHideCart();
+          }
+        });
+    }
+  }, [orderValue]);
 
   const cartItems = (
     <Table striped bordered hover>
@@ -118,14 +158,26 @@ export default function Cart(props) {
   );
 
   return (
-    <Modal onClose={props.onHideCart}>
+    <Modal
+      onClose={props.onHideCart}
+      show={show}
+      showHandle={handleShow}
+      error={error}
+    >
       {cartItems}
 
       <div className={"actions"}>
         <button className={"button--alt"} onClick={props.onHideCart}>
           Close
         </button>
-        {hasItems && <button className={"button"}>Order</button>}
+        {hasItems && (
+          <button
+            className={"button"}
+            onClick={() => setOrderValue(!orderValue)}
+          >
+            Order
+          </button>
+        )}
       </div>
     </Modal>
   );

@@ -857,6 +857,13 @@ export default function OuvrantCadre(props) {
       funcForMDP();
       funcForGA();
       funcForEM(B5);
+  
+  
+      //////////////////////// verifie ////////////////////
+      funcForCJH()
+      funcForCJL()
+      funcForCDCJ()
+      ///////////////////////////
     }
 
     // display MDP

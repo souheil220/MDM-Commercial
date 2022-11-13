@@ -165,9 +165,7 @@ export default function Selects() {
       return "";
     } else {
       return (
-        "F" +
-        mdp_select.options[mdp_select.selectedIndex].text +
-        couleur_h6.options[couleur_h6.selectedIndex].text
+        "F" + mdp_select.options[mdp_select.selectedIndex].text + couleur_h6
       );
     }
   }
