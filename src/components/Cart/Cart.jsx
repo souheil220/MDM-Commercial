@@ -14,7 +14,8 @@ export default function Cart(props) {
   const cartCxt = useContext(CartContext);
   const hasItems = true;
 
-  console.log(orderValue);
+  console.log(cartCxt.itemsCadre);
+  console.log(cartCxt.items);
 
   const cartItemRemoveHandler = (id) => {
     cartCxt.removeItem(id);
@@ -48,10 +49,10 @@ export default function Cart(props) {
           } else if (data.success !== undefined) {
             console.log(data.success);
             props.cartTitle === "Commande Ouvrant"
-              ? (cartCxt.items = [])
-              : (cartCxt.itemsCadre = []);
+              ? cartCxt.emptyCart()
+              : cartCxt.emptyCartCadre();
             setOrderValue(true);
-            props.onHideCart();
+            // props.onHideCart();
           }
         });
     }

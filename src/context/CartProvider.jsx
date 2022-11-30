@@ -81,12 +81,21 @@ export default function CartProvider(props) {
   //     id: id,
   //   });
   // };
+  const emptyCartHandler = () => {
+    setItemOuvrant([]);
+  };
+
+  const emptyCartHandlerCadre = () => {
+    setItemCadre([]);
+  };
 
   const cartContext = {
     items: defaultCartState.items,
     itemsCadre: defaultCartState.itemsCadre,
     addItem: addItemFromCartHandler,
     addItemCadre: addItemFromCartHandlerCadre,
+    emptyCartCadre: emptyCartHandlerCadre,
+    emptyCart: emptyCartHandler,
     // removeItem: removeItemFromCartHandler,
   };
   return (

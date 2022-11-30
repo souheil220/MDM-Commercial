@@ -6,13 +6,15 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import CartContext from "../../context/cart-context";
 import Button from "react-bootstrap/Button";
-import FloatingLabel from "react-bootstrap/FloatingLabel";
 import Form from "react-bootstrap/Form";
 import "./Selects.css";
 import { v4 as uuidv4 } from "uuid";
 import Card from "../UI/Card";
 
 import OuvrantCadre from "../OuvrantCadre/OuvrantCadre";
+
+import { useEffect } from "react";
+import SearchBarDropDown from "../UI/SearchBarDropDown";
 
 export default function Selects() {
   const cartCxt = useContext(CartContext);
@@ -44,8 +46,15 @@ export default function Selects() {
   const [cdcj, setcdcj] = useState(false);
 
   const [firstName, setFirstName] = useState("");
-  const [clientName, setClientName] = useState("");
   const [quantite, setQuantite] = useState("");
+  const [inputValueClient, setInputValueClient] = React.useState(null);
+  const [inputValueWarehouse, setInputValueWarehouse] = React.useState(null);
+  const [optionsClient, setOptionsClient] = React.useState([]);
+  const [optionsWarehouse, setOptionsWarehouse] = React.useState([]);
+  const [loadingClient, setLoadingClient] = React.useState(false);
+  const [loadingWarehouse, setLoadingwarehouse] = React.useState(false);
+  const [userChoiceClient, setUserChoiceClient] = useState("");
+  const [userChoiceWarehouse, setUserChoiceWarehouse] = useState("");
 
   function handleCOMMANDEChange(newValue) {
     settdp(newValue);
@@ -143,6 +152,16 @@ export default function Selects() {
   }
   function handleInputB14(input) {
     setInputB14(input);
+  }
+
+  function handleUserChoiceClient(value) {
+    console.log(value);
+    setUserChoiceClient(value);
+  }
+
+  function handleUserChoiceWarehouse(value) {
+    console.log(value);
+    setUserChoiceWarehouse(value);
   }
 
   function checkIfNull(data, text) {
@@ -339,76 +358,6 @@ export default function Selects() {
   }
 
   function getAllData() {
-    // (checkIfNull(document.getElementById("commande"), false));
-    // (checkIfNull(document.getElementById("tdp"), false));
-    // (checkIfNull(document.getElementById("mdp"), false));
-    // (checkIfNull(document.getElementById("mdf"), false));
-    // (checkIfNull(document.getElementById("couleur"), false));
-    // (checkIfNull(document.getElementById("ndv"), false));
-    // checkIfNull(document.getElementById("lp"), false);
-    // checkIfNull(document.getElementById("ho"), false);
-    // checkIfNull(document.getElementById("lo1"), false);
-    // // (checkIfNull(document.getElementById("lo2_value"), true));
-    // checkIfNull(document.getElementById("ms"), false);
-    // checkIfNull(document.getElementById("se"), false);
-    // checkIfNull(document.getElementById("pro"), false);
-    // checkIfNull(document.getElementById("so"), false);
-    // checkIfNull(document.getElementById("vi"), false);
-    // checkIfNull(document.getElementById("ga"), false);
-    // checkIfNull(document.getElementById("qu"), false);
-    // // (checkIfNull(document.getElementById("em"), false));
-    // // (checkIfNull(document.getElementById("cu_value"), true));
-    // // (checkIfNull(document.getElementById("cjh"), false));
-    // // (checkIfNull(document.getElementById("cjl"), false));
-    // // (checkIfNull(document.getElementById("cdcj"), false));
-
-    // commande_ouvrant_line.push(
-    //   codeModel(
-    //     document.getElementById("mdp"),
-    //     document.getElementById("couleur_h6").textContent
-    //   )
-    // );
-    // commande_ouvrant_line.push(
-    //   codeProtecteur(
-    //     document.getElementById("pro"),
-    //     document.getElementById("lo1")
-    //   )
-    // );
-
-    // commande_ouvrant_line.push(
-    //   codeVitrage(
-    //     document.getElementById("vi"),
-    //     document.getElementById("couleur_h6").textContent,
-    //     document.getElementById("lo1")
-    //   )
-    // );
-    // commande_ouvrant_line.push(
-    //   codeGrille(
-    //     document.getElementById("ga"),
-    //     document.getElementById("couleur_h6").textContent
-    //   )
-    // );
-
-    // commande_ouvrant_line.push(
-    //   codeEmbochure(
-    //     document.getElementById("ndv"),
-    //     "",
-    //     document.getElementById("lp"),
-    //     document.getElementById("ho"),
-    //     document.getElementById("lo1"),
-    //     document.getElementById("couleur_h6").textContent
-    //   )
-    // );
-    // commande_ouvrant_line.push(
-    //   codeSerure(
-    //     document.getElementById("tdp"),
-    //     document.getElementById("ndv"),
-    //     document.getElementById("ms_h6").textContent,
-    //     document.getElementById("so_h6").textContent
-    //   )
-    // );
-    // commande_ouvrant.push(commande_ouvrant_line);
-
     var data = {
       id: uuidv4(),
       code: generateCode(),
@@ -428,7 +377,8 @@ export default function Selects() {
       vi: checkIfNull(document.getElementById("vi"), false),
       ga: checkIfNull(document.getElementById("ga"), false),
       qu: checkIfNull(document.getElementById("qu"), false),
-      client: document.getElementById("clientName").value,
+      warehouse: userChoiceWarehouse,
+      client: userChoiceClient,
       codeModel: codeModel(
         document.getElementById("mdp"),
         document.getElementById("couleur_h6").textContent
@@ -471,10 +421,39 @@ export default function Selects() {
       console.log("elseeeeeeeeeeeeeeeeeeeeee");
       cartCxt.addItemCadre({ ...data });
     }
-
-    // console.log(commande_ouvrant);
-    // commande_ouvrant_line = [];
   }
+
+  useEffect(() => {
+    fetch(`http://127.0.0.1:8000/get-warehouse?name=${inputValueWarehouse}`)
+      .then((response) => response.json())
+      .then((data) => {
+        setOptionsWarehouse(data);
+      });
+    setLoadingwarehouse(false);
+  }, [inputValueWarehouse]);
+
+  useEffect(() => {
+    fetch(`http://127.0.0.1:8000/get-companny?name=${inputValueClient}`)
+      .then((response) => response.json())
+      .then((data) => {
+        setOptionsClient(data);
+      });
+    setLoadingClient(false);
+  }, [inputValueClient]);
+
+  const onInputChangeWarehouse = (event) => {
+    setLoadingwarehouse(true);
+    setTimeout(() => {
+      setInputValueWarehouse(event.target.value);
+    }, 2000);
+  };
+
+  const onInputChange = (event) => {
+    setLoadingClient(true);
+    setTimeout(() => {
+      setInputValueClient(event.target.value);
+    }, 2000);
+  };
 
   return (
     <section className={"section-card"}>
@@ -999,16 +978,35 @@ export default function Selects() {
             <Col xs={4}></Col>
           </Row>
         </Container>
+
+        <Container style={{ "margin-bottom": "1%" }}>
+          <Row>
+            <Col>
+              <h6>Warehouse</h6>
+            </Col>
+            <Col xs={6}>
+              <SearchBarDropDown
+                options={optionsWarehouse}
+                onInputChange={onInputChangeWarehouse}
+                loadingValue={loadingWarehouse}
+                userChoice={handleUserChoiceWarehouse}
+              />
+            </Col>
+            <Col xs={4}></Col>
+          </Row>
+        </Container>
+
         <Container style={{ "margin-bottom": "1%" }}>
           <Row>
             <Col>
               <h6>Client</h6>
             </Col>
             <Col xs={6}>
-              <Form.Control
-                value={clientName}
-                onChange={(e) => setClientName(e.target.value)}
-                id="clientName"
+              <SearchBarDropDown
+                options={optionsClient}
+                onInputChange={onInputChange}
+                loadingValue={loadingClient}
+                userChoice={handleUserChoiceClient}
               />
             </Col>
             <Col xs={4}></Col>
