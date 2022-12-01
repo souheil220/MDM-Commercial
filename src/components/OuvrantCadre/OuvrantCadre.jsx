@@ -63,6 +63,7 @@ export default function OuvrantCadre(props) {
     ) {
       props.onChangeB5Value(1);
       props.onChangeTDP(false);
+      props.onChangeMDP(true);
     } else {
       console.log("TDP " + tdp);
       props.onChangeB5Value(0);
@@ -85,7 +86,7 @@ export default function OuvrantCadre(props) {
 
   const funcForCou = () => {
     var mdf = document.getElementById("mdf");
-
+    console.log(props.inputB5Value);
     if (
       props.inputB5Value === 1 &&
       mdf.options[mdf.selectedIndex].text !== "" &&
@@ -94,7 +95,7 @@ export default function OuvrantCadre(props) {
       mdf.options[mdf.selectedIndex].text !== "Acier Laqué" &&
       mdf.options[mdf.selectedIndex].text !== "MDF Brute"
     ) {
-      props.onChange(true);
+      props.onChangeMDF(true);
     } else {
       if (
         commande.options[commande.selectedIndex].text === "" ||
@@ -236,6 +237,7 @@ export default function OuvrantCadre(props) {
 
   const funcForLO1 = () => {
     var ho = document.getElementById("ho");
+    var lp = document.getElementById("lp");
     if (ho.options[ho.selectedIndex].text === "Spéciale") {
       setShowHauteur(true);
     } else {
@@ -531,23 +533,18 @@ export default function OuvrantCadre(props) {
   };
 
   const funcForQu = (e, el) => {
+    console.log(so);
+
     if (props.inputB5Value === 1 && so !== null) {
-      props.onChangeQU(true);
+      props.onChangeQu(true);
     } else {
       if (
-        so !== null &&
         tdp.options[tdp.selectedIndex].text !== "Porte de Passage" &&
-        so.options[so.selectedIndex].text !== "" &&
+        el !== "" &&
         ga === null
       ) {
-        props.onChangeQU(true);
+        props.onChangeQu(true);
       } else {
-        var content = "";
-        // if (props.id === "so") {
-        //   content = el;
-        // } else {
-        //   content = so.options[so.selectedIndex].text;
-        // }
         if (
           commande.options[commande.selectedIndex].text === "" ||
           tdp.options[tdp.selectedIndex].text === "" ||
@@ -574,10 +571,10 @@ export default function OuvrantCadre(props) {
               el === "") &&
             commande.options[commande.selectedIndex].text === "Ouvrant Seul")
         ) {
-          props.onChangeQU(false);
+          props.onChangeQu(false);
         } else {
           console.log("gatlah 28");
-          props.onChangeQU(true);
+          props.onChangeQu(true);
         }
       }
     }
@@ -857,12 +854,11 @@ export default function OuvrantCadre(props) {
       funcForMDP();
       funcForGA();
       funcForEM(B5);
-  
-  
+
       //////////////////////// verifie ////////////////////
-      funcForCJH()
-      funcForCJL()
-      funcForCDCJ()
+      funcForCJH();
+      funcForCJL();
+      funcForCDCJ();
       ///////////////////////////
     }
 
@@ -978,12 +974,16 @@ export default function OuvrantCadre(props) {
     }
 
     if (props.id === "so") {
+      var commande = document.getElementById("commande");
       funcForVI(e, el);
       // funcForGA(e, el, null);
       // funcForQu(e, el);
       var so = document.getElementById("so");
       setShowText(props.options[so.selectedIndex].code);
-      // funcForQu(e, el);
+      if (commande.options[commande.selectedIndex].text === "Cadre Seul") {
+        console.log(props);
+        funcForQu(e, el);
+      }
     }
 
     if (props.id === "vi") {

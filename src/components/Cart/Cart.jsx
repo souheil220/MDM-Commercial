@@ -17,11 +17,11 @@ export default function Cart(props) {
   console.log(cartCxt.itemsCadre);
   console.log(cartCxt.items);
 
-  const cartItemRemoveHandler = (id) => {
+  const cartItemRemoveOuvrantHandler = (id) => {
     cartCxt.removeItem(id);
   };
-  const cartItemAddHandler = (item) => {
-    cartCxt.addItem({ ...item, amount: 1 });
+  const cartItemRemoveCadreHandler = (id) => {
+    cartCxt.removeCadreItem(id);
   };
 
   function handleShow() {
@@ -115,8 +115,7 @@ export default function Cart(props) {
               codeGrille={item.codeGrille}
               // codeEmbochure={item.codeEmbochure}
               // codeSerure={item.codeSerure}
-              onRemove={cartItemRemoveHandler.bind(null, item.id)}
-              onAdd={cartItemAddHandler.bind(null, item)}
+              onRemove={cartItemRemoveOuvrantHandler.bind(null, item.id)}
             />
           ))
         ) : props.cartTitle === "Commande Cadre" ? (
@@ -147,8 +146,7 @@ export default function Cart(props) {
               codeGrille={item.codeGrille}
               // codeEmbochure={item.codeEmbochure}
               // codeSerure={item.codeSerure}
-              onRemove={cartItemRemoveHandler.bind(null, item.id)}
-              onAdd={cartItemAddHandler.bind(null, item)}
+              onRemove={cartItemRemoveCadreHandler.bind(null, item.id)}
             />
           ))
         ) : (
