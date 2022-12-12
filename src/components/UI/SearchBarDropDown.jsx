@@ -7,8 +7,6 @@ export default function SearchBarDropDown(props) {
   const ulRef = useRef();
   const inputRef = useRef();
 
-  console.log("loading ", loadingValue);
-
   useEffect(() => {
     inputRef.current.addEventListener("click", (event) => {
       event.stopPropagation();
@@ -35,6 +33,7 @@ export default function SearchBarDropDown(props) {
           className="form-control"
           placeholder="Search"
           onChange={onInputChange}
+          required
         />
         {loadingValue && (
           <div className="sk-flow">
@@ -46,7 +45,6 @@ export default function SearchBarDropDown(props) {
       </div>
       <ul className="list-group" ref={ulRef}>
         {options.map((option, index) => {
-          console.log(option.label);
           return (
             <option
               type="button"

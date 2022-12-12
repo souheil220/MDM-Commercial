@@ -46,15 +46,66 @@ export default function Selects() {
   const [cdcj, setcdcj] = useState(false);
 
   const [firstName, setFirstName] = useState("");
+
+  const [type, setType] = useState("");
+
   const [quantite, setQuantite] = useState("");
+
+  const [prixUnitaire, setPrixUnitaire] = useState("");
+
   const [inputValueClient, setInputValueClient] = React.useState(null);
+
   const [inputValueWarehouse, setInputValueWarehouse] = React.useState(null);
+
+  const [inputValueAdressFacturation, setInputValueAdressFacturation] =
+    React.useState(null);
+
+  const [inputValueAdressLivraison, setInputValueAdressLivraison] =
+    React.useState(null);
+
+  const [inputValueCompteAnalytique, setInputValueCompteAnalytique] =
+    React.useState(null);
+
   const [optionsClient, setOptionsClient] = React.useState([]);
+
   const [optionsWarehouse, setOptionsWarehouse] = React.useState([]);
+
+  const [optionsAdressFacturation, setOptionsAdressFacturation] =
+    React.useState([]);
+
+  const [optionsAdressLivraison, setOptionsAdressLivraison] = React.useState(
+    []
+  );
+
+  const [optionsCompteAnalytique, setOptionsCompteAnalytique] = React.useState(
+    []
+  );
+
   const [loadingClient, setLoadingClient] = React.useState(false);
+
   const [loadingWarehouse, setLoadingwarehouse] = React.useState(false);
+
+  const [loadingAdressFacturation, setLoadingAdressFacturation] =
+    React.useState(false);
+
+  const [loadingAdressLivraison, setLoadingAdressLivraison] =
+    React.useState(false);
+
+  const [loadingCompteAnalytique, setLoadingCompteAnalytique] =
+    React.useState(false);
+
   const [userChoiceClient, setUserChoiceClient] = useState("");
+
   const [userChoiceWarehouse, setUserChoiceWarehouse] = useState("");
+
+  const [userChoiceAddresDeFacturation, setUserChoiceAddresDeFacturation] =
+    useState("");
+
+  const [userChoiceAdressLivraison, setUserChoiceAdressLivraison] =
+    useState("");
+
+  const [userChoiceCompteAnalytique, setUserChoiceCompteAnalytique] =
+    useState("");
 
   function handleCOMMANDEChange(newValue) {
     settdp(newValue);
@@ -162,6 +213,21 @@ export default function Selects() {
   function handleUserChoiceWarehouse(value) {
     console.log(value);
     setUserChoiceWarehouse(value);
+  }
+
+  function handleUserChoiceAddresDeFacturation(value) {
+    console.log(value);
+    setUserChoiceAddresDeFacturation(value);
+  }
+
+  function handleUserChoiceAddresDeLivraison(value) {
+    console.log(value);
+    setUserChoiceAdressLivraison(value);
+  }
+
+  function handleUserChoiceCompteAnalytique(value) {
+    console.log(value);
+    setUserChoiceCompteAnalytique(value);
   }
 
   function checkIfNull(data, text) {
@@ -362,6 +428,7 @@ export default function Selects() {
       id: uuidv4(),
       code: generateCode(),
       quantite: document.getElementById("quantite").value,
+      prixUnitaire: document.getElementById("prixUnitaire").value,
       tdp: checkIfNull(document.getElementById("tdp"), false),
       mdp: checkIfNull(document.getElementById("mdp"), false),
       mdf: checkIfNull(document.getElementById("mdf"), false),
@@ -379,6 +446,9 @@ export default function Selects() {
       qu: checkIfNull(document.getElementById("qu"), false),
       warehouse: userChoiceWarehouse,
       client: userChoiceClient,
+      addressFacturation: userChoiceAddresDeFacturation,
+      addressDeLivraison: userChoiceAdressLivraison,
+      compteAnalytique: userChoiceCompteAnalytique,
       codeModel: codeModel(
         document.getElementById("mdp"),
         document.getElementById("couleur_h6").textContent
@@ -423,6 +493,7 @@ export default function Selects() {
     }
   }
 
+  // Gat warehouses
   useEffect(() => {
     fetch(`http://127.0.0.1:8000/get-warehouse?name=${inputValueWarehouse}`)
       .then((response) => response.json())
@@ -432,6 +503,7 @@ export default function Selects() {
     setLoadingwarehouse(false);
   }, [inputValueWarehouse]);
 
+  // GET Clients
   useEffect(() => {
     fetch(`http://127.0.0.1:8000/get-companny?name=${inputValueClient}`)
       .then((response) => response.json())
@@ -441,13 +513,35 @@ export default function Selects() {
     setLoadingClient(false);
   }, [inputValueClient]);
 
-  const onInputChangeWarehouse = (event) => {
-    setLoadingwarehouse(true);
-    setTimeout(() => {
-      setInputValueWarehouse(event.target.value);
-    }, 2000);
-  };
+  // GET ( Adress de Facturation / Addresse de livraison )
+  useEffect(() => {
+    var url = "";
+    if (type === "invoice") {
+      url = `http://127.0.0.1:8000/get-address?address=${inputValueAdressFacturation}&parent_id=${userChoiceClient}&type=${type}`;
+    } else if (type === "delivery") {
+      url = `http://127.0.0.1:8000/get-address?address=${inputValueAdressLivraison}&parent_id=${userChoiceClient}&type=${type}`;
+    }
+    fetch(url)
+      .then((response) => response.json())
+      .then((data) => {
+        setOptionsAdressFacturation(data);
+      });
+    setLoadingAdressFacturation(false);
+  }, [inputValueAdressFacturation, inputValueAdressLivraison]);
 
+  // GET Compte Analytique
+  useEffect(() => {
+    fetch(
+      `http://127.0.0.1:8000/get-compteAnalytique?contratAnalytique=${inputValueCompteAnalytique}`
+    )
+      .then((response) => response.json())
+      .then((data) => {
+        setOptionsCompteAnalytique(data);
+      });
+    setLoadingCompteAnalytique(false);
+  }, [inputValueCompteAnalytique]);
+
+  // SET Client
   const onInputChange = (event) => {
     setLoadingClient(true);
     setTimeout(() => {
@@ -455,567 +549,677 @@ export default function Selects() {
     }, 2000);
   };
 
-  return (
-    <section className={"section-card"}>
-      <Card>
-        <OuvrantCadre
-          id={"commande"}
-          title={"Commande"}
-          options={[
-            { text: "", value: "", code: "" },
-            { text: "Ouvrant Seul", value: "Ouvrant Seul", code: "" },
-            { text: "Cadre Seul", value: "Cadre Seul", code: "" },
-            { text: "Ouvrant et Cadre", value: "Ouvrant et Cadre", code: "" },
-          ]}
-          onChangeC={handleCOMMANDEChange}
-          onChangeTDP={handleTDPChange}
-          onChangeEM={handleEMChange}
-          onChangeGA={handleGAChange}
-          onChangeB5Value={handleInputB5}
-          inputB5Value={inputB5}
-        />
+  // SET WAREHOUSE
+  const onInputChangeWarehouse = (event) => {
+    setLoadingwarehouse(true);
+    setTimeout(() => {
+      setInputValueWarehouse(event.target.value);
+    }, 2000);
+  };
 
-        {tdp && (
+  // SET Adress de facturation
+  const onInputChangeAdressFacturation = (event) => {
+    setLoadingAdressFacturation(true);
+    setTimeout(() => {
+      setType("invoice");
+      setInputValueAdressFacturation(event.target.value);
+    }, 2000);
+  };
+
+  // SET Adress de livraison
+  const onInputChangeAdressLivraison = (event) => {
+    setLoadingAdressLivraison(true);
+    setTimeout(() => {
+      setType("delivery");
+      setInputValueAdressLivraison(event.target.value);
+    }, 2000);
+  };
+
+  // SET Compte Analytique
+  const onInputChangeCompteAnalytique = (event) => {
+    setLoadingCompteAnalytique(true);
+    setTimeout(() => {
+      setInputValueCompteAnalytique(event.target.value);
+    }, 2000);
+  };
+
+  const formSubmitHandler = (event) => {
+    event.preventDefault();
+    getAllData();
+  };
+
+  return (
+    <Form onSubmit={formSubmitHandler}>
+      <section className={"section-card"}>
+        <Card>
           <OuvrantCadre
-            id={"tdp"}
-            title={"Type de porte"}
+            id={"commande"}
+            title={"Commande"}
             options={[
               { text: "", value: "", code: "" },
-              {
-                text: "Porte De Passage",
-                value: "Porte De Passage",
-                code: "PP",
-              },
-              {
-                text: "Porte D'Entrée Massive",
-                value: "Porte D'Entrée Massive",
-                code: "PEM",
-              },
-              {
-                text: "Porte Coupe-Feu 45mm",
-                value: "Porte Coupe-Feu 45mm",
-                code: "PCF45",
-              },
-              {
-                text: "Porte Coupe-Feu 60mm",
-                value: "Porte Coupe-Feu 60mm",
-                code: "PCF60",
-              },
-              {
-                text: "Porte Coupe-Feu 30mm",
-                value: "Porte Coupe-Feu 30mm",
-                code: "PCF30",
-              },
-              { text: "Technique", value: "Technique", code: "PTE" },
+              { text: "Ouvrant Seul", value: "Ouvrant Seul", code: "" },
+              { text: "Cadre Seul", value: "Cadre Seul", code: "" },
+              { text: "Ouvrant et Cadre", value: "Ouvrant et Cadre", code: "" },
             ]}
+            onChangeC={handleCOMMANDEChange}
             onChangeTDP={handleTDPChange}
-            onChangeMDP={handleMDPChange}
+            onChangeEM={handleEMChange}
             onChangeGA={handleGAChange}
             onChangeB5Value={handleInputB5}
             inputB5Value={inputB5}
           />
-        )}
 
-        {mdp && (
-          <OuvrantCadre
-            id={"mdp"}
-            title={"Modele De Porte"}
-            options={[
-              { text: "", value: "" },
-              { text: "Star Massif", value: "Star Massif", code: "STM" },
-              { text: "2F", value: "2F", code: "2F" },
-              { text: "4F", value: "4F", code: "4F" },
-              { text: "6F", value: "6F", code: "6F" },
-              { text: "4FL", value: "4FL", code: "4FL" },
-              { text: "EL1", value: "EL1", code: "EL1" },
-              { text: "EL7", value: "EL7", code: "EL7" },
-            ]}
-            onChangeMDP={handleMDPChange}
-            inputB5Value={inputB5}
-          />
-        )}
+          {tdp && (
+            <OuvrantCadre
+              id={"tdp"}
+              title={"Type de porte"}
+              options={[
+                { text: "", value: "", code: "" },
+                {
+                  text: "Porte De Passage",
+                  value: "Porte De Passage",
+                  code: "PP",
+                },
+                {
+                  text: "Porte D'Entrée Massive",
+                  value: "Porte D'Entrée Massive",
+                  code: "PEM",
+                },
+                {
+                  text: "Porte Coupe-Feu 45mm",
+                  value: "Porte Coupe-Feu 45mm",
+                  code: "PCF45",
+                },
+                {
+                  text: "Porte Coupe-Feu 60mm",
+                  value: "Porte Coupe-Feu 60mm",
+                  code: "PCF60",
+                },
+                {
+                  text: "Porte Coupe-Feu 30mm",
+                  value: "Porte Coupe-Feu 30mm",
+                  code: "PCF30",
+                },
+                { text: "Technique", value: "Technique", code: "PTE" },
+              ]}
+              onChangeTDP={handleTDPChange}
+              onChangeMDP={handleMDPChange}
+              onChangeGA={handleGAChange}
+              onChangeB5Value={handleInputB5}
+              inputB5Value={inputB5}
+            />
+          )}
 
-        {mdf && (
-          <OuvrantCadre
-            id={"mdf"}
-            title={"Matière De Finition"}
-            options={[
-              { text: "", value: "" },
-              { text: "Mélaminé", value: "Mélaminé", code: "" },
-              { text: "Laqué", value: "Laqué", code: "" },
-              { text: "MDF Brute", value: "MDF Brute", code: "" },
-              {
-                text: "Stratifier 3mm/Aluminium",
-                value: "Stratifier 3mm/Aluminium",
-                code: "",
-              },
-            ]}
-            onChangeMDF={handleMDFChange}
-            onChangeCOULEUR={handleCOULEURChange}
-            inputB5Value={inputB5}
-          />
-        )}
+          {mdp && (
+            <OuvrantCadre
+              id={"mdp"}
+              title={"Modele De Porte"}
+              options={[
+                { text: "", value: "" },
+                { text: "Star Massif", value: "Star Massif", code: "STM" },
+                { text: "2F", value: "2F", code: "2F" },
+                { text: "4F", value: "4F", code: "4F" },
+                { text: "6F", value: "6F", code: "6F" },
+                { text: "4FL", value: "4FL", code: "4FL" },
+                { text: "EL1", value: "EL1", code: "EL1" },
+                { text: "EL7", value: "EL7", code: "EL7" },
+              ]}
+              onChangeMDP={handleMDPChange}
+              inputB5Value={inputB5}
+            />
+          )}
 
-        {cou && (
-          <OuvrantCadre
-            id={"couleur"}
-            title={"Couleur"}
-            options={[
-              { text: "", value: "" },
-              { text: "Finza Chène", value: "Finza Chène", code: "FCH" },
-              { text: "Finza Sapelly", value: "Finza Sapelly", code: "FWE" },
-              { text: "Finza Wengue", value: "Finza Wengue", code: "FJP" },
-              { text: "Brute", value: "Brute", code: "CR" },
-              { text: "Blanc", value: "Blanc", code: "BL" },
-              { text: "Biege", value: "Biege", code: "BE" },
-              { text: "Finza Stella", value: "Finza Stella", code: "FST" },
-              { text: "Finza Azabache", value: "Finza Tostado", code: "FAZ" },
-            ]}
-            onChangeCOULEUR={handleCOULEURChange}
-            inputB5Value={inputB5}
-          />
-        )}
+          {mdf && (
+            <OuvrantCadre
+              id={"mdf"}
+              title={"Matière De Finition"}
+              options={[
+                { text: "", value: "" },
+                { text: "Mélaminé", value: "Mélaminé", code: "" },
+                { text: "Laqué", value: "Laqué", code: "" },
+                { text: "MDF Brute", value: "MDF Brute", code: "" },
+                {
+                  text: "Stratifier 3mm/Aluminium",
+                  value: "Stratifier 3mm/Aluminium",
+                  code: "",
+                },
+              ]}
+              onChangeMDF={handleMDFChange}
+              onChangeCOULEUR={handleCOULEURChange}
+              inputB5Value={inputB5}
+            />
+          )}
 
-        {ndv && (
-          <OuvrantCadre
-            id={"ndv"}
-            title={"Nombre de Ventaux"}
-            options={[
-              { text: "", value: "" },
-              { text: "1", value: "1", code: "1" },
-              { text: "2", value: "2", code: "2" },
-            ]}
-            onChangeNDV={handleNDVChange}
-            onChangeLP={handleLPChange}
-            onChangeLO1={handleLO1Change}
-            nameSetter={nameSetter}
-            inputB5Value={inputB5}
-          />
-        )}
+          {cou && (
+            <OuvrantCadre
+              id={"couleur"}
+              title={"Couleur"}
+              options={[
+                { text: "", value: "" },
+                { text: "Finza Chène", value: "Finza Chène", code: "FCH" },
+                { text: "Finza Sapelly", value: "Finza Sapelly", code: "FWE" },
+                { text: "Finza Wengue", value: "Finza Wengue", code: "FJP" },
+                { text: "Brute", value: "Brute", code: "CR" },
+                { text: "Blanc", value: "Blanc", code: "BL" },
+                { text: "Biege", value: "Biege", code: "BE" },
+                { text: "Finza Stella", value: "Finza Stella", code: "FST" },
+                { text: "Finza Azabache", value: "Finza Tostado", code: "FAZ" },
+              ]}
+              onChangeCOULEUR={handleCOULEURChange}
+              inputB5Value={inputB5}
+            />
+          )}
 
-        {lp && (
-          <OuvrantCadre
-            id={"lp"}
-            title={"Largeur Precadre (Intérieur)"}
-            options={[
-              { text: "", value: "" },
-              { text: "1136", value: "1136", code: "1136" },
-              { text: "1236", value: "1236", code: "1236" },
-              { text: "1336", value: "1336", code: "1336" },
-              { text: "1459", value: "1459", code: "1459" },
-              { text: "1659", value: "1659", code: "1659" },
-              { text: "1859", value: "1859", code: "1859" },
-            ]}
-            onChangeLP={handleLPChange}
-            onChangeLO2Value={handleLO2Value}
-          />
-        )}
+          {ndv && (
+            <OuvrantCadre
+              id={"ndv"}
+              title={"Nombre de Ventaux"}
+              options={[
+                { text: "", value: "" },
+                { text: "1", value: "1", code: "1" },
+                { text: "2", value: "2", code: "2" },
+              ]}
+              onChangeNDV={handleNDVChange}
+              onChangeLP={handleLPChange}
+              onChangeLO1={handleLO1Change}
+              nameSetter={nameSetter}
+              inputB5Value={inputB5}
+            />
+          )}
 
-        {ho && (
-          <OuvrantCadre
-            id={"ho"}
-            title={"Hauteur Ouvrant (mm)"}
-            options={[
-              { text: "", value: "" },
-              { text: "2030", value: "2030", code: "2030" },
-              { text: "2090", value: "2090", code: "2090" },
-              { text: "Spéciale", value: "Spéciale", code: "Hauteur" },
-            ]}
-            onChangeHO={handleHOChange}
-            nameSetter={nameSetter}
-            inputB5Value={inputB5}
-          />
-        )}
+          {lp && (
+            <OuvrantCadre
+              id={"lp"}
+              title={"Largeur Precadre (Intérieur)"}
+              options={[
+                { text: "", value: "" },
+                { text: "1136", value: "1136", code: "1136" },
+                { text: "1236", value: "1236", code: "1236" },
+                { text: "1336", value: "1336", code: "1336" },
+                { text: "1459", value: "1459", code: "1459" },
+                { text: "1659", value: "1659", code: "1659" },
+                { text: "1859", value: "1859", code: "1859" },
+              ]}
+              onChangeLP={handleLPChange}
+              onChangeLO2Value={handleLO2Value}
+            />
+          )}
 
-        {lo1 && (
-          <OuvrantCadre
-            id={"lo1"}
-            title={`Largueur ${firstName} Ouvrant (mm)`}
-            options={[
-              { text: "", value: "" },
-              { text: "623", value: "623", code: "623" },
-              { text: "723", value: "723", code: "723" },
-              { text: "823", value: "823", code: "823" },
-              { text: "923", value: "923", code: "923" },
-              { text: "1023", value: "1023", code: "1023" },
-              { text: "Spéciale", value: "Spéciale", code: "Largeur" },
-            ]}
-            onChangeLO1={handleLO1Change}
-            onChangeMS={handleMSChange}
-            onChangePro={handleProChange}
-            onChangeLO2Value={handleLO2Value}
-          />
-        )}
+          {ho && (
+            <OuvrantCadre
+              id={"ho"}
+              title={"Hauteur Ouvrant (mm)"}
+              options={[
+                { text: "", value: "" },
+                { text: "2030", value: "2030", code: "2030" },
+                { text: "2090", value: "2090", code: "2090" },
+                { text: "Spéciale", value: "Spéciale", code: "Hauteur" },
+              ]}
+              onChangeHO={handleHOChange}
+              nameSetter={nameSetter}
+              inputB5Value={inputB5}
+            />
+          )}
 
-        {lo2 && (
-          <Container id={"lo2"}>
+          {lo1 && (
+            <OuvrantCadre
+              id={"lo1"}
+              title={`Largueur ${firstName} Ouvrant (mm)`}
+              options={[
+                { text: "", value: "" },
+                { text: "623", value: "623", code: "623" },
+                { text: "723", value: "723", code: "723" },
+                { text: "823", value: "823", code: "823" },
+                { text: "923", value: "923", code: "923" },
+                { text: "1023", value: "1023", code: "1023" },
+                { text: "Spéciale", value: "Spéciale", code: "Largeur" },
+              ]}
+              onChangeLO1={handleLO1Change}
+              onChangeMS={handleMSChange}
+              onChangePro={handleProChange}
+              onChangeLO2Value={handleLO2Value}
+            />
+          )}
+
+          {lo2 && (
+            <Container id={"lo2"}>
+              <Row>
+                <Col>
+                  <h6>Largueur 2eme Ovrant (mm)</h6>
+                </Col>
+                <Col xs={6}>
+                  <p id="lo2_value">{lo2Value}</p>
+                </Col>
+                <Col>
+                  <p></p>
+                </Col>
+              </Row>
+            </Container>
+          )}
+
+          {ms && (
+            <OuvrantCadre
+              id={"ms"}
+              title={"Mécanisation de Serrure"}
+              options={[
+                { text: "", value: "" },
+                {
+                  text: "Sans Mecanisation",
+                  value: "Sans Mecanisation",
+                  code: "PC",
+                },
+                { text: "Grande Clé", value: "Grande Clé", code: "GC" },
+                { text: "à Gache", value: "à Gache", code: "G" },
+                { text: "Condamnation", value: "Condamnation", code: "C" },
+                { text: "Petite Clé", value: "Petite Clé", code: "PC" },
+                {
+                  text: "1 Point Sécurité",
+                  value: "1 Point Sécurité",
+                  code: "1PS",
+                },
+                {
+                  text: "3 Point Sécurité",
+                  value: "3 Point Sécurité",
+                  code: "3PS",
+                },
+                { text: "Anti-Panique", value: "Anti-Panique", code: "AP" },
+                {
+                  text: "Serrure Magnétique",
+                  value: "Serrure Magnétique",
+                  code: "PC",
+                },
+                {
+                  text: "grande clé zamak",
+                  value: "grande clé zamak",
+                  code: "GC",
+                },
+                { text: "à gache zamak", value: "à gache zamak", code: "G" },
+                {
+                  text: "condamnation zamak",
+                  value: "condamnation zamak",
+                  code: "C",
+                },
+                {
+                  text: "petite clé zamak",
+                  value: "petite clé zamak",
+                  code: "PC",
+                },
+                {
+                  text: "3 point sécurité zamak",
+                  value: "3 point sécurité zamak",
+                  code: "3PS",
+                },
+                { text: "petite clé tec", value: "petite clé tec", code: "PC" },
+                {
+                  text: "condamnation tec",
+                  value: "condamnation tec",
+                  code: "C",
+                },
+                {
+                  text: "petite clé tec zamak",
+                  value: "petite clé tec zamak",
+                  code: "PC",
+                },
+                {
+                  text: "condamnation tec zamak",
+                  value: "condamnation tec zamak",
+                  code: "C",
+                },
+                { text: "petite clé cf", value: "petite clé cf", code: "PC" },
+              ]}
+              onChangeSE={handleSEChange}
+              onChangeSO={handleSOChange}
+              onChangeB14Value={handleInputB14}
+            />
+          )}
+
+          {se && (
+            <OuvrantCadre
+              id={"se"}
+              title={"Serrure"}
+              options={[
+                { text: "", value: "" },
+                { text: "Oui", value: "Oui", code: "Oui" },
+                { text: "Non", value: "Non", code: "Non" },
+              ]}
+              onChangeSO={handleSOChange}
+              inputB14={inputB14}
+            />
+          )}
+
+          {pro && (
+            <OuvrantCadre
+              id={"pro"}
+              title={"Protecteur"}
+              options={[
+                { text: "", value: "" },
+                { text: "1 Face", value: "1 Face", code: "1 Face" },
+                { text: "2 Faces", value: "2 Faces", code: "2 Faces" },
+                {
+                  text: "Sans Protecteur",
+                  value: "Sans Protecteur",
+                  code: "Sans Protecteur",
+                },
+              ]}
+              onChangeSO={handleSOChange}
+            />
+          )}
+
+          {so && (
+            <OuvrantCadre
+              id={"so"}
+              title={"Sens D'Ouverture"}
+              options={[
+                { text: "", value: "" },
+                { text: "Droite", value: "Droite", code: "D" },
+                { text: "Gauche", value: "Gauche", code: "G" },
+                { text: "Sans Sens", value: "Sans Sens", code: "D" },
+              ]}
+              onChangeVI={handleVIChange}
+              onChangeGA={handleGAChange}
+              onChangeQu={handleQUChange}
+            />
+          )}
+
+          {vi && (
+            <OuvrantCadre
+              id={"vi"}
+              title={"Vitrage"}
+              options={[
+                { text: "", value: "" },
+                { text: "Sans Vitre", value: "Sans Vitre", code: "Sans Vitre" },
+                {
+                  text: "Vitrage Haut",
+                  value: "Vitrage Haut",
+                  code: "Vitrage Haut",
+                },
+                {
+                  text: "Vitrage Bas",
+                  value: "Vitrage Bas",
+                  code: "Vitrage Bas",
+                },
+                {
+                  text: "Vitrage Oculus",
+                  value: "Vitrage Oculus",
+                  code: "Vitrage Oculus",
+                },
+                { text: "V5AL", value: "V5AL", code: "V5AL" },
+                { text: "V4AL", value: "V4AL", code: "V4AL" },
+                {
+                  text: "Vitrage Côté",
+                  value: "Vitrage Côté",
+                  code: "Vitrage Côté",
+                },
+              ]}
+              onChangeGA={handleGAChange}
+            />
+          )}
+
+          {ga && (
+            <OuvrantCadre
+              id={"ga"}
+              title={"Grille D'Airation"}
+              options={[
+                { text: "", value: "" },
+                {
+                  text: "Mecanisation de grille et grille d'Airation",
+                  value: "Mecanisation de grille et grille d'Airation",
+                  code: "Mecanisation de grille et grille d'Airation",
+                },
+                {
+                  text: "Mécanisation De Grille Sans grille d'Airation",
+                  value: "Mécanisation De Grille Sans grille d'Airation",
+                  code: "Mécanisation De Grille Sans grille d'Airation",
+                },
+                {
+                  text: "Sans Mécanisation",
+                  value: "Sans Mécanisation",
+                  code: "Sans Mécanisation",
+                },
+              ]}
+              onChangeQu={handleQUChange}
+              inputB5Value={inputB5}
+            />
+          )}
+
+          {qu && (
+            <OuvrantCadre
+              id={"qu"}
+              title={"Quincaillerie"}
+              options={[
+                { text: "", value: "" },
+                {
+                  text: "Niquel",
+                  value: "Niquel",
+                  code: "Niquel",
+                },
+                {
+                  text: "Sans Quincaillerie",
+                  value: "Sans Quincaillerie",
+                  code: "Sans Quincaillerie",
+                },
+              ]}
+              onChangeEM={handleEMChange}
+              inputB5Value={inputB5}
+            />
+          )}
+
+          {em && (
+            <OuvrantCadre
+              id={"em"}
+              title={"Epaisseur Mur(mm)"}
+              options={[
+                { text: "", value: "" },
+                {
+                  text: "130-->165",
+                  value: "130-->165",
+                  code: "130",
+                },
+                {
+                  text: "160-->195",
+                  value: "160-->195",
+                  code: "160",
+                },
+                {
+                  text: "Spéciale",
+                  value: "Spéciale",
+                  code: "Epaisseur",
+                },
+              ]}
+              onChangeCU={handleCUChange}
+              onChangeCJH={handleCJHChange}
+              onChangeCUValue={handleCUValue}
+              inputB5Value={inputB5}
+            />
+          )}
+
+          {cu && (
+            <Container id={"cu"}>
+              <Row>
+                <Col>
+                  <h6>Cadre utilisé</h6>
+                </Col>
+                <Col xs={6}>
+                  <h6 id="cu_value">{cuValue}</h6>
+                </Col>
+                <Col>
+                  <h6>Embochure</h6>
+                </Col>
+              </Row>
+            </Container>
+          )}
+
+          {cjh && (
+            <OuvrantCadre
+              id={"cjh"}
+              title={"Couvre Joint Hauteur (mm)"}
+              options={[
+                { text: "", value: "" },
+                {
+                  text: "90",
+                  value: "90",
+                  code: "2",
+                },
+              ]}
+              onChangeCJL={handleCJLChange}
+              inputB5Value={inputB5}
+            />
+          )}
+
+          {cjl && (
+            <OuvrantCadre
+              id={"cjl"}
+              title={"Couvre Joint Largeur (mm)"}
+              options={[
+                { text: "", value: "" },
+                {
+                  text: "90",
+                  value: "90",
+                  code: "2",
+                },
+              ]}
+              onChangeCDCJ={handleCDCJChange}
+              inputB5Value={inputB5}
+            />
+          )}
+          {cdcj && (
+            <OuvrantCadre
+              id={"cdcj"}
+              title={"Coupe De couvre Joint"}
+              options={[
+                { text: "", value: "" },
+                {
+                  text: "90°",
+                  value: "90°",
+                  code: "2",
+                },
+              ]}
+            />
+          )}
+
+          <Container style={{ "margin-bottom": "1%" }}>
             <Row>
               <Col>
-                <h6>Largueur 2eme Ovrant (mm)</h6>
+                <h6>Prix Unitaire</h6>
               </Col>
               <Col xs={6}>
-                <p id="lo2_value">{lo2Value}</p>
+                <Form.Control
+                  value={prixUnitaire}
+                  onChange={(e) => setPrixUnitaire(e.target.value)}
+                  id="prixUnitaire"
+                  required
+                />
               </Col>
-              <Col>
-                <p></p>
-              </Col>
+              <Col xs={4}></Col>
             </Row>
           </Container>
-        )}
-
-        {ms && (
-          <OuvrantCadre
-            id={"ms"}
-            title={"Mécanisation de Serrure"}
-            options={[
-              { text: "", value: "" },
-              {
-                text: "Sans Mecanisation",
-                value: "Sans Mecanisation",
-                code: "PC",
-              },
-              { text: "Grande Clé", value: "Grande Clé", code: "GC" },
-              { text: "à Gache", value: "à Gache", code: "G" },
-              { text: "Condamnation", value: "Condamnation", code: "C" },
-              { text: "Petite Clé", value: "Petite Clé", code: "PC" },
-              {
-                text: "1 Point Sécurité",
-                value: "1 Point Sécurité",
-                code: "1PS",
-              },
-              {
-                text: "3 Point Sécurité",
-                value: "3 Point Sécurité",
-                code: "3PS",
-              },
-              { text: "Anti-Panique", value: "Anti-Panique", code: "AP" },
-              {
-                text: "Serrure Magnétique",
-                value: "Serrure Magnétique",
-                code: "PC",
-              },
-              {
-                text: "grande clé zamak",
-                value: "grande clé zamak",
-                code: "GC",
-              },
-              { text: "à gache zamak", value: "à gache zamak", code: "G" },
-              {
-                text: "condamnation zamak",
-                value: "condamnation zamak",
-                code: "C",
-              },
-              {
-                text: "petite clé zamak",
-                value: "petite clé zamak",
-                code: "PC",
-              },
-              {
-                text: "3 point sécurité zamak",
-                value: "3 point sécurité zamak",
-                code: "3PS",
-              },
-              { text: "petite clé tec", value: "petite clé tec", code: "PC" },
-              {
-                text: "condamnation tec",
-                value: "condamnation tec",
-                code: "C",
-              },
-              {
-                text: "petite clé tec zamak",
-                value: "petite clé tec zamak",
-                code: "PC",
-              },
-              {
-                text: "condamnation tec zamak",
-                value: "condamnation tec zamak",
-                code: "C",
-              },
-              { text: "petite clé cf", value: "petite clé cf", code: "PC" },
-            ]}
-            onChangeSE={handleSEChange}
-            onChangeSO={handleSOChange}
-            onChangeB14Value={handleInputB14}
-          />
-        )}
-
-        {se && (
-          <OuvrantCadre
-            id={"se"}
-            title={"Serrure"}
-            options={[
-              { text: "", value: "" },
-              { text: "Oui", value: "Oui", code: "Oui" },
-              { text: "Non", value: "Non", code: "Non" },
-            ]}
-            onChangeSO={handleSOChange}
-            inputB14={inputB14}
-          />
-        )}
-
-        {pro && (
-          <OuvrantCadre
-            id={"pro"}
-            title={"Protecteur"}
-            options={[
-              { text: "", value: "" },
-              { text: "1 Face", value: "1 Face", code: "1 Face" },
-              { text: "2 Faces", value: "2 Faces", code: "2 Faces" },
-              {
-                text: "Sans Protecteur",
-                value: "Sans Protecteur",
-                code: "Sans Protecteur",
-              },
-            ]}
-            onChangeSO={handleSOChange}
-          />
-        )}
-
-        {so && (
-          <OuvrantCadre
-            id={"so"}
-            title={"Sens D'Ouverture"}
-            options={[
-              { text: "", value: "" },
-              { text: "Droite", value: "Droite", code: "D" },
-              { text: "Gauche", value: "Gauche", code: "G" },
-              { text: "Sans Sens", value: "Sans Sens", code: "D" },
-            ]}
-            onChangeVI={handleVIChange}
-            onChangeGA={handleGAChange}
-            onChangeQu={handleQUChange}
-          />
-        )}
-
-        {vi && (
-          <OuvrantCadre
-            id={"vi"}
-            title={"Vitrage"}
-            options={[
-              { text: "", value: "" },
-              { text: "Sans Vitre", value: "Sans Vitre", code: "Sans Vitre" },
-              {
-                text: "Vitrage Haut",
-                value: "Vitrage Haut",
-                code: "Vitrage Haut",
-              },
-              {
-                text: "Vitrage Bas",
-                value: "Vitrage Bas",
-                code: "Vitrage Bas",
-              },
-              {
-                text: "Vitrage Oculus",
-                value: "Vitrage Oculus",
-                code: "Vitrage Oculus",
-              },
-              { text: "V5AL", value: "V5AL", code: "V5AL" },
-              { text: "V4AL", value: "V4AL", code: "V4AL" },
-              {
-                text: "Vitrage Côté",
-                value: "Vitrage Côté",
-                code: "Vitrage Côté",
-              },
-            ]}
-            onChangeGA={handleGAChange}
-          />
-        )}
-
-        {ga && (
-          <OuvrantCadre
-            id={"ga"}
-            title={"Grille D'Airation"}
-            options={[
-              { text: "", value: "" },
-              {
-                text: "Mecanisation de grille et grille d'Airation",
-                value: "Mecanisation de grille et grille d'Airation",
-                code: "Mecanisation de grille et grille d'Airation",
-              },
-              {
-                text: "Mécanisation De Grille Sans grille d'Airation",
-                value: "Mécanisation De Grille Sans grille d'Airation",
-                code: "Mécanisation De Grille Sans grille d'Airation",
-              },
-              {
-                text: "Sans Mécanisation",
-                value: "Sans Mécanisation",
-                code: "Sans Mécanisation",
-              },
-            ]}
-            onChangeQU={handleQUChange}
-            inputB5Value={inputB5}
-          />
-        )}
-
-        {qu && (
-          <OuvrantCadre
-            id={"qu"}
-            title={"Quincaillerie"}
-            options={[
-              { text: "", value: "" },
-              {
-                text: "Niquel",
-                value: "Niquel",
-                code: "Niquel",
-              },
-              {
-                text: "Sans Quincaillerie",
-                value: "Sans Quincaillerie",
-                code: "Sans Quincaillerie",
-              },
-            ]}
-            onChangeEM={handleEMChange}
-            inputB5Value={inputB5}
-          />
-        )}
-
-        {em && (
-          <OuvrantCadre
-            id={"em"}
-            title={"Epaisseur Mur(mm)"}
-            options={[
-              { text: "", value: "" },
-              {
-                text: "130-->165",
-                value: "130-->165",
-                code: "130",
-              },
-              {
-                text: "160-->195",
-                value: "160-->195",
-                code: "160",
-              },
-              {
-                text: "Spéciale",
-                value: "Spéciale",
-                code: "Epaisseur",
-              },
-            ]}
-            onChangeCU={handleCUChange}
-            onChangeCJH={handleCJHChange}
-            onChangeCUValue={handleCUValue}
-            inputB5Value={inputB5}
-          />
-        )}
-
-        {cu && (
-          <Container id={"cu"}>
+          <Container style={{ "margin-bottom": "1%" }}>
             <Row>
               <Col>
-                <h6>Cadre utilisé</h6>
+                <h6>Quantité</h6>
               </Col>
               <Col xs={6}>
-                <h6 id="cu_value">{cuValue}</h6>
+                <Form.Control
+                  value={quantite}
+                  onChange={(e) => setQuantite(e.target.value)}
+                  id="quantite"
+                  required
+                />
               </Col>
-              <Col>
-                <h6>Embochure</h6>
-              </Col>
+              <Col xs={4}></Col>
             </Row>
           </Container>
-        )}
 
-        {cjh && (
-          <OuvrantCadre
-            id={"cjh"}
-            title={"Couvre Joint Hauteur (mm)"}
-            options={[
-              { text: "", value: "" },
-              {
-                text: "90",
-                value: "90",
-                code: "2",
-              },
-            ]}
-            onChangeCJL={handleCJLChange}
-            inputB5Value={inputB5}
-          />
-        )}
+          <Container style={{ "margin-bottom": "1%" }}>
+            <Row>
+              <Col>
+                <h6>Warehouse</h6>
+              </Col>
+              <Col xs={6}>
+                <SearchBarDropDown
+                  options={optionsWarehouse}
+                  onInputChange={onInputChangeWarehouse}
+                  loadingValue={loadingWarehouse}
+                  userChoice={handleUserChoiceWarehouse}
+                />
+              </Col>
+              <Col xs={4}></Col>
+            </Row>
+          </Container>
 
-        {cjl && (
-          <OuvrantCadre
-            id={"cjl"}
-            title={"Couvre Joint Largeur (mm)"}
-            options={[
-              { text: "", value: "" },
-              {
-                text: "90",
-                value: "90",
-                code: "2",
-              },
-            ]}
-            onChangeCDCJ={handleCDCJChange}
-            inputB5Value={inputB5}
-          />
-        )}
-        {cdcj && (
-          <OuvrantCadre
-            id={"cdcj"}
-            title={"Coupe De couvre Joint"}
-            options={[
-              { text: "", value: "" },
-              {
-                text: "90°",
-                value: "90°",
-                code: "2",
-              },
-            ]}
-          />
-        )}
+          <Container style={{ "margin-bottom": "1%" }}>
+            <Row>
+              <Col>
+                <h6>Client</h6>
+              </Col>
+              <Col xs={6}>
+                <SearchBarDropDown
+                  options={optionsClient}
+                  onInputChange={onInputChange}
+                  loadingValue={loadingClient}
+                  userChoice={handleUserChoiceClient}
+                />
+              </Col>
+              <Col xs={4}></Col>
+            </Row>
+          </Container>
 
-        <Container style={{ "margin-bottom": "1%" }}>
-          <Row>
-            <Col>
-              <h6>Quantité</h6>
-            </Col>
-            <Col xs={6}>
-              <Form.Control
-                value={quantite}
-                onChange={(e) => setQuantite(e.target.value)}
-                id="quantite"
-              />
-            </Col>
-            <Col xs={4}></Col>
-          </Row>
-        </Container>
+          <Container style={{ "margin-bottom": "1%" }}>
+            <Row>
+              <Col>
+                <h6>Adress de facturation</h6>
+              </Col>
+              <Col xs={6}>
+                <SearchBarDropDown
+                  options={optionsAdressFacturation}
+                  onInputChange={onInputChangeAdressFacturation}
+                  loadingValue={loadingAdressFacturation}
+                  userChoice={handleUserChoiceAddresDeFacturation}
+                />
+              </Col>
+              <Col xs={4}></Col>
+            </Row>
+          </Container>
 
-        <Container style={{ "margin-bottom": "1%" }}>
-          <Row>
-            <Col>
-              <h6>Warehouse</h6>
-            </Col>
-            <Col xs={6}>
-              <SearchBarDropDown
-                options={optionsWarehouse}
-                onInputChange={onInputChangeWarehouse}
-                loadingValue={loadingWarehouse}
-                userChoice={handleUserChoiceWarehouse}
-              />
-            </Col>
-            <Col xs={4}></Col>
-          </Row>
-        </Container>
+          <Container style={{ "margin-bottom": "1%" }}>
+            <Row>
+              <Col>
+                <h6>Adress de livraison</h6>
+              </Col>
+              <Col xs={6}>
+                <SearchBarDropDown
+                  options={optionsAdressLivraison}
+                  onInputChange={onInputChangeAdressLivraison}
+                  loadingValue={loadingAdressLivraison}
+                  userChoice={handleUserChoiceAddresDeLivraison}
+                />
+              </Col>
+              <Col xs={4}></Col>
+            </Row>
+          </Container>
 
-        <Container style={{ "margin-bottom": "1%" }}>
-          <Row>
-            <Col>
-              <h6>Client</h6>
-            </Col>
-            <Col xs={6}>
-              <SearchBarDropDown
-                options={optionsClient}
-                onInputChange={onInputChange}
-                loadingValue={loadingClient}
-                userChoice={handleUserChoiceClient}
-              />
-            </Col>
-            <Col xs={4}></Col>
-          </Row>
-        </Container>
-        <Button variant="primary" onClick={getAllData}>
-          Confirmer
-        </Button>
-      </Card>
-    </section>
+          <Container style={{ "margin-bottom": "1%" }}>
+            <Row>
+              <Col>
+                <h6>Compte Analytique</h6>
+              </Col>
+              <Col xs={6}>
+                <SearchBarDropDown
+                  options={optionsCompteAnalytique}
+                  onInputChange={onInputChangeCompteAnalytique}
+                  loadingValue={loadingCompteAnalytique}
+                  userChoice={handleUserChoiceCompteAnalytique}
+                />
+              </Col>
+              <Col xs={4}></Col>
+            </Row>
+          </Container>
+          {/* onClick={getAllData} */}
+          <Button type="submit" variant="primary">
+            Confirmer
+          </Button>
+        </Card>
+      </section>
+    </Form>
   );
 }
